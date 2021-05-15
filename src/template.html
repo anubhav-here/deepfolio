@@ -49,12 +49,49 @@
     </style>
     <!-- Remove this script once you setup your custom portfolio -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script src="https://www.amcharts.com/lib/4/core.js"></script>
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+<script src="https://www.amcharts.com/lib/4/plugins/wordCloud.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+
   </head>
-
   <!-- Follow the HTML instructions to create your stunning portfolio website -->
-
+  <header>
+    <nav id="navbar_top" class="navbar navbar-expand-sm bg-light navbar-light justify-content-end">
+      
+      <a href="https://anubhavkaro.medium.com/" target="_blank" class="cta-btn text-color-main" style="margin-right: 2rem;">Blogs</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse flex-grow-0" id="navbarSupportedContent">
+          <ul class="navbar-nav text-right">
+            <li class="nav-item active">
+              <a class="nav-link" href="#hero" style="font-size: 15px; padding: 2rem;">Home</a>
+          </li>
+              <li class="nav-item active">
+                  <a class="nav-link" href="#about" style="font-size: 15px; padding: 2rem;">About Me</a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="#redhat" style="font-size: 15px; padding: 2rem;">Skills</a>
+            </li>
+              <li class="nav-item active">
+                  <a class="nav-link" href="#projects" style="font-size: 15px; padding: 2rem;">Projects</a>
+              </li>
+              
+              <li class="nav-item active">
+                <a class="nav-link" href="#contact" style="font-size: 15px; padding: 2rem;">Contact</a>
+            </li>
+            
+          </ul>
+      </div>
+  </nav>
+  </header>
   <body class="body1">
-    <div id="top"></div>
+
+    <a href="#" id="scroll" style="display: none; z-index: 999;"><span></span></a>
+    <div id="top">
+      
+    </div>
 
     <!-- **** Hero Section **** -->
     <div id="hero" class="jumbotron">
@@ -79,9 +116,10 @@
             font-family: Helvetica, sans-serif;
             font-size: 38px;
             font-weight: normal;
+            margin-top: 10rem;
           "
         >
-          NAMASTE 🙏 नमस्ते
+          Namaste 🙏 नमस्ते
         </h2>
         <div class="row about-wrapper">
           <div class="col-md-6 col-sm-12">
@@ -98,21 +136,21 @@
           <div class="col-md-6 col-sm-12">
             <div class="about-wrapper__info">
               <p class="about-wrapper__info-text">
-                Hello! 👋🏼 My name is Anubhav and I am a Developer, an Open
-                Source Contributor, Freelancer, Musician, die-hard foodie and an
+                My name is Anubhav and I am a Developer, an open
+                source contributor, freelancer, musician, die-hard foodie and an
                 amateur chef trying to have some fun in everything I do.
               </p>
               <p class="about-wrapper__info-text">
-                Personally, I like playing piano, listening to rap music and
-                hip-hop, and always had a knack for solving real-life problems
-                and aspiring to find a role which is directly related to
+                I like playing piano, listening to rap music,
+                hip-hop and always had a knack for solving real-life problems.
+                I am always looking out for a a role which is directly related to
                 building a Product.
               </p>
               <!-- <span class="d-flex mt-3">
                 <a target="_blank" class="cta-btn cta-btn--resume" href="">
-                  View Resume
-                </a>
-              </span> -->
+                  About Me
+                </a> -->
+              </span>
             </div>
           </div>
         </div>
@@ -141,10 +179,11 @@
         <div class="project-wrapper">
           <h2
             class="display-4 dark-blue-text mb-20"
-            style=" font-size: 38px; margin-bottom: 5rem"
+            style=" font-size: 50px; margin-bottom: 5rem; font-weight: bold;"
           >
             What I Do?
           </h2>
+          <hr style="padding-bottom: 5rem;">
           <div class="row">
             <div class="col-lg-6 col-sm-12">
               <div class="project-wrapper__text">
@@ -257,6 +296,7 @@
                     </p>
                   </div>
                   <a
+                    id="redhat"
                     target="_blank"
                     class="cta-btn cta-btn--hero"
                     href="https://www.redhat.com/en/"
@@ -289,8 +329,9 @@
         </div>
       </div>
     </section>
+
     <!-- Photo Library Section -->
-    <div class="jumbotron jumbotron-fluid">
+    <!-- <div class="jumbotron jumbotron-fluid">
       <div class="container">
         <h1 class="display-4">A BRIEF HISTORY OF { my } TIME</h1>
         <p class="lead">Swipe ➡️ below to get to know me better.</p>
@@ -377,29 +418,38 @@
           </a>
         </div>
       </div>
-    </section>
+    </section> -->
 
-    <div
-      class="jumbotron jumbotron-fluid"
-      style="margin-top: 7rem; margin-bottom: 5rem; height: 150px"
-    >
+    
       <div class="container">
-        <h1 class="display-4">{ techstack }</h1>
-        <p class="lead">Things I do with love</p>
+        <h1  class="display-4 dark-blue-text mb-20" id="forte"
+        style=" font-size: 50px; margin-bottom: 5rem; font-weight: bold;">My Forte</h1>
+        <hr>
       </div>
-    </div>
+    
+      <div id="chartdiv"></div>
 
-    <img
-      src="./assets/wordcloud.jpg"
-      alt="skills"
-      style="
-        background-size: 100%;
-        background-repeat: no-repeat;
-        max-width: 100%;
-        margin-bottom: 5rem;
-      "
-    />
+      <div class="container"> 
+        <h1  class="display-4 dark-blue-text mb-20" id="projects"
+        style=" font-size: 50px;margin-top: 8 rem; margin-bottom: 5rem; font-weight: bold;">Tech - Stack</h1>
+        <hr style="padding-bottom: 5rem;" >
+        
+        <h3  class="display-4 dark-blue-text mb-20" 
+        style=" font-size: 50px;margin-top: 6 rem; margin-bottom: 5rem; text-align: left;">Integrations</h3>
 
+        <p class="mb-4" style="text-align: justify;"> I am a <b> Mulesoft Certified Developer</b> and I have worked on various projects where in I have integrated various end-systems like <b>Salesforce, Oracle, SAP, Sharepoint and Azure</b> etc. I am proficient in writing complex <b>Dataweave</b> transformations, familiar with API-led connectivity, messaging queues, RESTful practices, policies and monitoring. I have worked on various use-cases where complex data processing was required and verified them with <b>MUnit</b> test-cases and used <b>Apache JMeter</b> for load testing.</p>
+        <img src="https://www.mulesoft.com/sites/default/files/spaghetti%20code.png" style="max-width: 100%; height: auto; margin-top: 3rem; padding-bottom: 5rem;" alt="mule">
+
+        
+        <h3  class="display-4 dark-blue-text mb-20" 
+        style=" font-size: 50px;margin-top: 6 rem; margin-bottom: 5rem; text-align: left;">DevOps</h3>
+
+        <p class="mb-4" style="text-align: justify;"> I have worked in writing operators; which are basically the orchestrators in a <b>kubernetes</b> environment. I am proficient in working with containers, pods, proxies and the deployment process of an API and how kubernetes helps in distributing and keeping up with load for an API. Along with this, I know Golang and I am good with DevOps methodologies, Docker, linux shell scripting and a bit of Ansible.   </p>
+        <img src="https://dpsvdv74uwwos.cloudfront.net/statics/img/product-pages/devops.png" style="max-width: 100%; height: auto; margin-top: 3rem; padding-bottom: 5rem;" alt="devops">
+
+      </div>
+    
+ 
     <div class="monkey-patch" style="background: #e9ecef;">
       <div
         class="jumbotron jumbotron-fluid"
@@ -407,20 +457,21 @@
       >
         <div class="container">
           <h1 class="display-4">
-            "talk is cheap; show me the code" <br> ~ Linus Torvalds
+           <span style=" font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">"talk is cheap; show me the code"</span> <br> <span style="font-size: medium;"> ~ Linus Torvalds</span>
           </h1>
-          <p class="lead">
+          <p class="lead" style="font-size: medium;">
             Check out my
-            <a class="lead" href="https://github.com/anubhav-here-zz"
+            <a class="lead" style="font-size: medium;" href="https://github.com/anubhav-here-zz"
               >open-source contributions</a
             >
             and
-            <a class="lead" href="https://github.com/anubhav-here">
+            <a class="lead"  style="font-size: medium;" href="https://github.com/anubhav-here">
               personal projects</a
             >.
           </p>
         </div>
       </div>
+      
 
       <!-- **** Projects Section **** -->
       <!-- <section id="projects">
@@ -470,7 +521,7 @@
       <!-- **** Contact Section **** -->
       <section id="contact">
         <div class="container">
-          <h2 class="display-4">Contact Me</h2>
+          <h2 class="display-4" style="font-weight: bold;">Contact Me</h2>
           <div class="contact-wrapper">
             <p class="contact-wrapper__text">
               "Your emails always warm the cockles of my heart"
