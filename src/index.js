@@ -71,7 +71,7 @@ series.step = 15;
 series.rotationThreshold = 0.7;
 series.maxCount = 200;
 series.minWordLength = 2;
-series.fontFamily = "Helvetica";
+series.fontFamily = "Impact";
 series.maxFontSize = am4core.percent(30);
 
 series.text = "Python Python Python Python Python Python Python Python Python Mulesoft Mulesoft Mulesoft Mulesoft Mulesoft Mulesoft Mulesoft RAML RAML RAML RAML RAML RAML API  API API API API API API Dataweave Dataweave Dataweave Dataweave Dataweave Data-Science Data-Science Data-Science Data-Science Data-Science AWS AWS AWS AWS AWS AWS GCP GCP GCP GCP GCP Azure Azure Azure Azure C C C C C C++ C++ C++ C++ C++ C++ Java Java Java Java Java Jmeter Jmeter Jmeter Jmeter Jmeter Jmeter DevOps DevOps DevOps DevOps DevOps DevOps DevOps DevOps kubernetes kubernetes kubernetes kubernetes kubernetes kubernetes  API-Design API-Design API-Design API-Design API-Design API-Design REST REST REST REST REST  golang golang golang golang golang  integrations integrations integrations integrations integrations integrations integrations  RAML HTML HTML HTML HTML HTML  Full-Stack Full-Stack Full-Stack Full-Stack hybrid-cloud hybrid-cloud hybrid-cloud hybrid-cloud hybrid-cloud swagger swagger swagger swagger swagger javascript javascript javascript javascript jenkins jenkins jenkins jenkins jenkins Flask Flask Flask Flask Flask azure-devops azure-devops azure-devops azure-devops azure-devops Ansible Ansible Ansible Ansible Ansible SQL SQL SQL SQL SQL SQL data-visualization data-visualization data-visualization data-visualization data-visualization data-visualization data-visualization "; 
