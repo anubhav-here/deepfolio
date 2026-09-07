@@ -29,11 +29,6 @@
           <div class="hero-meta">
             <p>New York</p>
             <p>Cross-commodity<br />quantitative research</p>
-            <div class="simulation-controls" aria-label="Monte Carlo controls">
-              <label>Drift <input id="drift" type="range" min="4" max="35" value="18" /><output id="drift-output">+18%</output></label>
-              <label>Volatility <input id="volatility" type="range" min="8" max="55" value="28" /><output id="vol-output">28%</output></label>
-              <label>Paths <input id="paths" type="range" min="24" max="96" value="56" step="4" /><output id="paths-output">56</output></label>
-            </div>
           </div>
         </div>
       </section>
@@ -45,9 +40,8 @@
         </header>
         <div class="player-layout">
           <div class="track-copy">
-            <p class="track-label">Selected from my rotation</p>
-            <h2 id="listening-title">Press play.</h2>
-            <p id="track-status" aria-live="polite">Playlist ready</p>
+            <p class="track-label" id="listening-title">Selected from my rotation</p>
+            <p id="track-status" aria-live="polite">Shuffle on</p>
             <div class="player-actions">
               <button type="button" id="play-toggle" aria-label="Play playlist">Play</button>
               <button type="button" id="next-track" aria-label="Play next track">Next</button>
@@ -59,7 +53,7 @@
       </section>
 
       <section class="section index" id="index" aria-labelledby="index-title">
-        <header class="section-head"><p id="index-title">Index</p><p>Four things</p></header>
+        <header class="section-head"><p id="index-title">Index</p><p>Three things</p></header>
         <div class="index-list">
           <details class="index-item" open>
             <summary><span class="number">01</span><span>Formula 1</span><span class="summary-note">Ferrari · Hamilton · F40</span></summary>
@@ -89,33 +83,14 @@
           </details>
 
           <details class="index-item">
-            <summary><span class="number">02</span><span>Chess</span><span class="summary-note">No rating attached</span></summary>
-            <div class="index-content chess-content">
-              <div class="puzzle-copy">
-                <p id="puzzle-name">Scholar's mate</p>
-                <p id="puzzle-instruction">White to move. Find mate in one.</p>
-                <div class="puzzle-nav" aria-label="Chess puzzle selection">
-                  <button type="button" id="previous-puzzle" aria-label="Previous puzzle">←</button>
-                  <span id="puzzle-count">1 / 3</span>
-                  <button type="button" id="next-puzzle" aria-label="Next puzzle">→</button>
-                </div>
-              </div>
-              <div class="chess-wrap">
-                <div id="chessboard" class="chessboard" role="grid" aria-label="Chess tactics puzzle"></div>
-                <div class="chess-actions"><span id="puzzle-status" aria-live="polite">Select a piece.</span><button type="button" id="reset-board">Reset</button></div>
-              </div>
+            <summary><span class="number">02</span><span>Art / Design</span><span class="summary-note">Saved links</span></summary>
+            <div class="index-content collection-list">
+              <p class="collection-empty">No links added yet.</p>
             </div>
           </details>
 
           <details class="index-item">
-            <summary><span class="number">03</span><span>Art / Design</span><span class="summary-note">Probability as material</span></summary>
-            <div class="index-content design-content">
-              <p>The Monte Carlo lives in the opening frame.</p>
-            </div>
-          </details>
-
-          <details class="index-item">
-            <summary><span class="number">04</span><span>Tables</span><span class="summary-note">New York</span></summary>
+            <summary><span class="number">03</span><span>Recs</span><span class="summary-note">New York</span></summary>
             <div class="index-content table-list">
               <a href="https://www.cove-nyc.com/" target="_blank" rel="noreferrer"><span>Cove</span><span>Hudson Square ↗</span></a>
               <a href="https://www.kabin.nyc/" target="_blank" rel="noreferrer"><span>KABIN</span><span>Hudson Square ↗</span></a>

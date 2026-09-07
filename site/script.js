@@ -1,12 +1,7 @@
 const playlistId = "PLfbmOEKBzK4Q";
 const canvas = document.querySelector("#monte-carlo");
 const context = canvas.getContext("2d");
-const driftInput = document.querySelector("#drift");
-const volatilityInput = document.querySelector("#volatility");
-const pathInput = document.querySelector("#paths");
-const driftOutput = document.querySelector("#drift-output");
-const volOutput = document.querySelector("#vol-output");
-const pathsOutput = document.querySelector("#paths-output");
+const simulationSettings = { count: 56, drift: .18, volatility: .28 };
 
 let simulation = [];
 let simulationStart = performance.now();
@@ -19,9 +14,7 @@ function normalRandom() {
 }
 
 function makeSimulation() {
-  const count = Number(pathInput.value);
-  const drift = Number(driftInput.value) / 100;
-  const sigma = Number(volatilityInput.value) / 100;
+  const { count, drift, volatility: sigma } = simulationSettings;
   const steps = window.innerWidth < 640 ? 90 : 150;
   simulation = Array.from({ length: count }, () => {
     const values = [1];
@@ -78,16 +71,6 @@ function drawSimulation(now) {
   requestAnimationFrame(drawSimulation);
 }
 
-function refreshSimulation() {
-  driftOutput.value = `+${driftInput.value}%`;
-  volOutput.value = `${volatilityInput.value}%`;
-  pathsOutput.value = pathInput.value;
-  makeSimulation();
-}
-
-driftInput.addEventListener("input", refreshSimulation);
-volatilityInput.addEventListener("input", refreshSimulation);
-pathInput.addEventListener("input", refreshSimulation);
 window.addEventListener("resize", resizeCanvas, { passive: true });
 resizeCanvas();
 requestAnimationFrame(drawSimulation);
@@ -113,7 +96,8 @@ function createYouTubePlayer() {
     playerVars: { listType: "playlist", list: playlistId, playsinline: 1, rel: 0, modestbranding: 1 },
     events: {
       onReady: () => {
-        trackStatus.textContent = "Playlist ready";
+        youtubePlayer.setShuffle?.(true);
+        trackStatus.textContent = "Shuffle on";
         window.setTimeout(updateTrack, 400);
       },
       onStateChange: (event) => {
@@ -218,106 +202,6 @@ reactionButton.addEventListener("click", () => {
 });
 renderScores();
 
-const board = document.querySelector("#chessboard");
-const resetBoard = document.querySelector("#reset-board");
-const puzzleName = document.querySelector("#puzzle-name");
-const puzzleInstruction = document.querySelector("#puzzle-instruction");
-const puzzleCount = document.querySelector("#puzzle-count");
-const puzzleStatus = document.querySelector("#puzzle-status");
-const previousPuzzle = document.querySelector("#previous-puzzle");
-const nextPuzzle = document.querySelector("#next-puzzle");
-const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
-const puzzles = [
-  {
-    name: "Scholar's mate", instruction: "White to move. Find mate in one.", move: ["h5", "f7"], answer: "Qxf7#",
-    pieces: { a1:"♖",b1:"♘",c1:"♗",d1:"♕",e1:"♔",g1:"♘",h1:"♖",a2:"♙",b2:"♙",c2:"♙",d2:"♙",f2:"♙",g2:"♙",h2:"♙",e4:"♙",c4:"♗",h5:"♕",a8:"♜",c8:"♝",d8:"♛",e8:"♚",f8:"♝",h8:"♜",a7:"♟",b7:"♟",c7:"♟",d7:"♟",f7:"♟",g7:"♟",h7:"♟",e5:"♟",c6:"♞",f6:"♞" }
-  },
-  {
-    name: "Fool's mate", instruction: "Black to move. Find mate in one.", move: ["d8", "h4"], answer: "Qh4#",
-    pieces: { a1:"♖",b1:"♘",c1:"♗",d1:"♕",e1:"♔",f1:"♗",g1:"♘",h1:"♖",a2:"♙",b2:"♙",c2:"♙",d2:"♙",e2:"♙",h2:"♙",f3:"♙",g4:"♙",a8:"♜",b8:"♞",c8:"♝",d8:"♛",e8:"♚",f8:"♝",g8:"♞",h8:"♜",a7:"♟",b7:"♟",c7:"♟",d7:"♟",f7:"♟",g7:"♟",h7:"♟",e5:"♟" }
-  },
-  {
-    name: "Back rank", instruction: "White to move. Find mate in one.", move: ["e1", "e8"], answer: "Re8#",
-    pieces: { g1:"♔",e1:"♖",f2:"♙",g2:"♙",h2:"♙",g8:"♚",f7:"♟",g7:"♟",h7:"♟" }
-  }
-];
-let puzzleIndex = 0;
-let selectedSquare = null;
-let solvedMove = null;
-let currentPieces = {};
-
-function renderPuzzle() {
-  const puzzle = puzzles[puzzleIndex];
-  currentPieces = { ...puzzle.pieces };
-  selectedSquare = null;
-  solvedMove = null;
-  puzzleName.textContent = puzzle.name;
-  puzzleInstruction.textContent = puzzle.instruction;
-  puzzleCount.textContent = `${puzzleIndex + 1} / ${puzzles.length}`;
-  puzzleStatus.textContent = "Select a piece.";
-  renderBoard();
-}
-
-function renderBoard() {
-  [...board.children].forEach((square) => {
-    const position = square.dataset.position;
-    square.textContent = currentPieces[position] || "";
-    square.classList.toggle("selected", selectedSquare === position);
-    square.classList.toggle("last-move", solvedMove?.includes(position));
-    square.setAttribute("aria-label", `${position}${currentPieces[position] ? `, ${currentPieces[position]}` : ""}`);
-  });
-}
-
-function playMove(position) {
-  const puzzle = puzzles[puzzleIndex];
-  if (!selectedSquare) {
-    if (!currentPieces[position]) return;
-    selectedSquare = position;
-    puzzleStatus.textContent = `${position} selected.`;
-    renderBoard();
-    return;
-  }
-  if (selectedSquare === position) {
-    selectedSquare = null;
-    puzzleStatus.textContent = "Select a piece.";
-    renderBoard();
-    return;
-  }
-  const attemptedMove = [selectedSquare, position];
-  if (attemptedMove[0] === puzzle.move[0] && attemptedMove[1] === puzzle.move[1]) {
-    currentPieces[position] = currentPieces[selectedSquare];
-    delete currentPieces[selectedSquare];
-    solvedMove = attemptedMove;
-    selectedSquare = null;
-    puzzleStatus.textContent = `Solved · ${puzzle.answer}`;
-  } else {
-    selectedSquare = null;
-    puzzleStatus.textContent = "Not quite. Try again.";
-  }
-  renderBoard();
-}
-
-for (let rank = 8; rank >= 1; rank -= 1) {
-  files.forEach((file) => {
-    const square = document.createElement("button");
-    square.type = "button";
-    square.className = "square";
-    square.dataset.position = `${file}${rank}`;
-    square.setAttribute("role", "gridcell");
-    square.addEventListener("click", () => playMove(square.dataset.position));
-    board.appendChild(square);
-  });
-}
-
-function changePuzzle(direction) {
-  puzzleIndex = (puzzleIndex + direction + puzzles.length) % puzzles.length;
-  renderPuzzle();
-}
-
-previousPuzzle.addEventListener("click", () => changePuzzle(-1));
-nextPuzzle.addEventListener("click", () => changePuzzle(1));
-resetBoard.addEventListener("click", renderPuzzle);
-renderPuzzle();
 document.querySelectorAll(".index-item").forEach((item) => item.addEventListener("toggle", () => {
   if (!item.open) return;
   document.querySelectorAll(".index-item").forEach((other) => { if (other !== item) other.open = false; });
