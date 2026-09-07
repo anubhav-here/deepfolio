@@ -2,8 +2,10 @@ const playlistId = "PLfbmOEKBzK4Q";
 const canvas = document.querySelector("#monte-carlo");
 const context = canvas.getContext("2d");
 const rerunButton = document.querySelector("#rerun");
+const driftInput = document.querySelector("#drift");
 const volatilityInput = document.querySelector("#volatility");
 const pathInput = document.querySelector("#paths");
+const driftOutput = document.querySelector("#drift-output");
 const volOutput = document.querySelector("#vol-output");
 const pathsOutput = document.querySelector("#paths-output");
 
@@ -19,6 +21,7 @@ function normalRandom() {
 
 function makeSimulation() {
   const count = Number(pathInput.value);
+  const drift = Number(driftInput.value) / 100;
   const sigma = Number(volatilityInput.value) / 100;
   const steps = window.innerWidth < 640 ? 90 : 150;
   simulation = Array.from({ length: count }, () => {
@@ -26,10 +29,15 @@ function makeSimulation() {
     for (let step = 1; step < steps; step += 1) {
       const dt = 1 / steps;
       const previous = values[step - 1];
-      values.push(previous * Math.exp((-0.5 * sigma * sigma) * dt + sigma * Math.sqrt(dt) * normalRandom()));
+      values.push(previous * Math.exp((drift - 0.5 * sigma * sigma) * dt + sigma * Math.sqrt(dt) * normalRandom()));
     }
     return values;
   });
+  simulation.sort((left, right) => left.at(-1) - right.at(-1));
+  const upwardCandidates = simulation.filter((path) => path.at(-1) > 1.08);
+  const highlighted = upwardCandidates[Math.floor(upwardCandidates.length * .68)] || simulation.at(-1);
+  simulation.splice(simulation.indexOf(highlighted), 1);
+  simulation.push(highlighted);
   simulationStart = performance.now();
 }
 
@@ -72,12 +80,14 @@ function drawSimulation(now) {
 }
 
 function refreshSimulation() {
+  driftOutput.value = `+${driftInput.value}%`;
   volOutput.value = `${volatilityInput.value}%`;
   pathsOutput.value = pathInput.value;
   makeSimulation();
 }
 
 rerunButton.addEventListener("click", makeSimulation);
+driftInput.addEventListener("input", refreshSimulation);
 volatilityInput.addEventListener("input", refreshSimulation);
 pathInput.addEventListener("input", refreshSimulation);
 window.addEventListener("resize", resizeCanvas, { passive: true });
@@ -187,48 +197,105 @@ reactionButton.addEventListener("click", () => {
 });
 
 const board = document.querySelector("#chessboard");
-const queenCount = document.querySelector("#queen-count");
 const resetBoard = document.querySelector("#reset-board");
-const queens = new Set();
+const puzzleName = document.querySelector("#puzzle-name");
+const puzzleInstruction = document.querySelector("#puzzle-instruction");
+const puzzleCount = document.querySelector("#puzzle-count");
+const puzzleStatus = document.querySelector("#puzzle-status");
+const previousPuzzle = document.querySelector("#previous-puzzle");
+const nextPuzzle = document.querySelector("#next-puzzle");
+const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
+const puzzles = [
+  {
+    name: "Scholar's mate", instruction: "White to move. Find mate in one.", move: ["h5", "f7"], answer: "Qxf7#",
+    pieces: { a1:"♖",b1:"♘",c1:"♗",d1:"♕",e1:"♔",g1:"♘",h1:"♖",a2:"♙",b2:"♙",c2:"♙",d2:"♙",f2:"♙",g2:"♙",h2:"♙",e4:"♙",c4:"♗",h5:"♕",a8:"♜",c8:"♝",d8:"♛",e8:"♚",f8:"♝",h8:"♜",a7:"♟",b7:"♟",c7:"♟",d7:"♟",f7:"♟",g7:"♟",h7:"♟",e5:"♟",c6:"♞",f6:"♞" }
+  },
+  {
+    name: "Fool's mate", instruction: "Black to move. Find mate in one.", move: ["d8", "h4"], answer: "Qh4#",
+    pieces: { a1:"♖",b1:"♘",c1:"♗",d1:"♕",e1:"♔",f1:"♗",g1:"♘",h1:"♖",a2:"♙",b2:"♙",c2:"♙",d2:"♙",e2:"♙",h2:"♙",f3:"♙",g4:"♙",a8:"♜",b8:"♞",c8:"♝",d8:"♛",e8:"♚",f8:"♝",g8:"♞",h8:"♜",a7:"♟",b7:"♟",c7:"♟",d7:"♟",f7:"♟",g7:"♟",h7:"♟",e5:"♟" }
+  },
+  {
+    name: "Back rank", instruction: "White to move. Find mate in one.", move: ["e1", "e8"], answer: "Re8#",
+    pieces: { g1:"♔",e1:"♖",f2:"♙",g2:"♙",h2:"♙",g8:"♚",f7:"♟",g7:"♟",h7:"♟" }
+  }
+];
+let puzzleIndex = 0;
+let selectedSquare = null;
+let solvedMove = null;
+let currentPieces = {};
 
-function hasConflict(position) {
-  const [row, column] = position.split("-").map(Number);
-  return [...queens].some((other) => {
-    if (other === position) return false;
-    const [otherRow, otherColumn] = other.split("-").map(Number);
-    return row === otherRow || column === otherColumn || Math.abs(row - otherRow) === Math.abs(column - otherColumn);
-  });
+function renderPuzzle() {
+  const puzzle = puzzles[puzzleIndex];
+  currentPieces = { ...puzzle.pieces };
+  selectedSquare = null;
+  solvedMove = null;
+  puzzleName.textContent = puzzle.name;
+  puzzleInstruction.textContent = puzzle.instruction;
+  puzzleCount.textContent = `${puzzleIndex + 1} / ${puzzles.length}`;
+  puzzleStatus.textContent = "Select a piece.";
+  renderBoard();
 }
 
-function renderQueens() {
+function renderBoard() {
   [...board.children].forEach((square) => {
-    const occupied = queens.has(square.dataset.position);
-    square.textContent = occupied ? "♛" : "";
-    square.classList.toggle("conflict", occupied && hasConflict(square.dataset.position));
-    square.setAttribute("aria-pressed", String(occupied));
+    const position = square.dataset.position;
+    square.textContent = currentPieces[position] || "";
+    square.classList.toggle("selected", selectedSquare === position);
+    square.classList.toggle("last-move", solvedMove?.includes(position));
+    square.setAttribute("aria-label", `${position}${currentPieces[position] ? `, ${currentPieces[position]}` : ""}`);
   });
-  const solved = queens.size === 8 && ![...queens].some(hasConflict);
-  queenCount.textContent = solved ? "Solved" : `${queens.size} / 8`;
 }
 
-for (let row = 0; row < 8; row += 1) {
-  for (let column = 0; column < 8; column += 1) {
+function playMove(position) {
+  const puzzle = puzzles[puzzleIndex];
+  if (!selectedSquare) {
+    if (!currentPieces[position]) return;
+    selectedSquare = position;
+    puzzleStatus.textContent = `${position} selected.`;
+    renderBoard();
+    return;
+  }
+  if (selectedSquare === position) {
+    selectedSquare = null;
+    puzzleStatus.textContent = "Select a piece.";
+    renderBoard();
+    return;
+  }
+  const attemptedMove = [selectedSquare, position];
+  if (attemptedMove[0] === puzzle.move[0] && attemptedMove[1] === puzzle.move[1]) {
+    currentPieces[position] = currentPieces[selectedSquare];
+    delete currentPieces[selectedSquare];
+    solvedMove = attemptedMove;
+    selectedSquare = null;
+    puzzleStatus.textContent = `Solved · ${puzzle.answer}`;
+  } else {
+    selectedSquare = null;
+    puzzleStatus.textContent = "Not quite. Try again.";
+  }
+  renderBoard();
+}
+
+for (let rank = 8; rank >= 1; rank -= 1) {
+  files.forEach((file) => {
     const square = document.createElement("button");
     square.type = "button";
     square.className = "square";
-    square.dataset.position = `${row}-${column}`;
+    square.dataset.position = `${file}${rank}`;
     square.setAttribute("role", "gridcell");
-    square.setAttribute("aria-label", `Row ${row + 1}, column ${column + 1}`);
-    square.addEventListener("click", () => {
-      if (queens.has(square.dataset.position)) queens.delete(square.dataset.position);
-      else if (queens.size < 8) queens.add(square.dataset.position);
-      renderQueens();
-    });
+    square.addEventListener("click", () => playMove(square.dataset.position));
     board.appendChild(square);
-  }
+  });
 }
 
-resetBoard.addEventListener("click", () => { queens.clear(); renderQueens(); });
+function changePuzzle(direction) {
+  puzzleIndex = (puzzleIndex + direction + puzzles.length) % puzzles.length;
+  renderPuzzle();
+}
+
+previousPuzzle.addEventListener("click", () => changePuzzle(-1));
+nextPuzzle.addEventListener("click", () => changePuzzle(1));
+resetBoard.addEventListener("click", renderPuzzle);
+renderPuzzle();
 document.querySelectorAll(".index-item").forEach((item) => item.addEventListener("toggle", () => {
   if (!item.open) return;
   document.querySelectorAll(".index-item").forEach((other) => { if (other !== item) other.open = false; });

@@ -89,9 +89,9 @@ h1 span:last-child { text-align: right; padding-right: .06em; }
 .index-content { padding: clamp(1.5rem, 4vw, 4rem) 0 clamp(5rem, 9vw, 8rem) 5rem; }
 
 .f1-content { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 7vw, 8rem); align-items: end; }
-.f40 { display: flex; align-items: flex-end; gap: 1rem; color: var(--red); }
-.f40 strong { font-size: clamp(7rem, 19vw, 18rem); line-height: .65; letter-spacing: -.1em; font-weight: 700; }
-.f40 span { color: var(--gray-1); font-size: .75rem; }
+.car-stage { position: relative; min-height: clamp(11rem, 23vw, 22rem); overflow: hidden; border-bottom: 1px solid var(--line); }
+.car-stage > span { position: absolute; inset: 0 auto auto 0; z-index: 2; color: var(--gray-1); font-size: .75rem; }
+.car-stage img { position: absolute; left: -8%; bottom: 4%; width: min(105%, 56rem); height: auto; filter: drop-shadow(0 1.4rem 1.4rem rgba(0,0,0,.65)); animation: f40-drive 11s linear infinite; will-change: transform, opacity; }
 .reaction { border-top: 1px solid var(--line); padding-top: 1.25rem; }
 .reaction-title, #reaction-result { color: var(--gray-1); font-size: .78rem; }
 .lights { display: flex; gap: .55rem; margin: 2rem 0; }
@@ -101,11 +101,16 @@ h1 span:last-child { text-align: right; padding-right: .06em; }
 #reaction-button.go { background: var(--red); border-color: var(--red); }
 
 .chess-content { display: grid; grid-template-columns: 1fr auto; gap: 3rem; align-items: start; }
-.chess-content > p, .design-content > p { margin: 0; max-width: 25ch; color: var(--gray-1); font-size: clamp(1.6rem, 3vw, 3.2rem); line-height: 1.05; letter-spacing: -.04em; }
+.puzzle-copy > p:first-child, .design-content > p { margin: 0; max-width: 25ch; color: var(--gray-1); font-size: clamp(1.6rem, 3vw, 3.2rem); line-height: 1.05; letter-spacing: -.04em; }
+.puzzle-copy > p:nth-child(2) { margin: 1rem 0 0; color: var(--gray-1); font-size: .78rem; }
+.puzzle-nav { display: inline-grid; grid-template-columns: 2.75rem auto 2.75rem; align-items: center; margin-top: 2rem; border: 1px solid var(--line); }
+.puzzle-nav button { min-height: 2.75rem; border: 0; background: transparent; color: var(--white); cursor: pointer; }
+.puzzle-nav span { padding: 0 .75rem; color: var(--gray-1); font-size: .75rem; }
 .chessboard { display: grid; grid-template-columns: repeat(8, 1fr); width: min(70vw, 30rem); aspect-ratio: 1; border: 1px solid var(--line); }
 .square { display: grid; place-items: center; border: 0; padding: 0; color: var(--white); background: #141414; cursor: pointer; font-size: clamp(1.25rem, 4vw, 2.2rem); }
 .square:nth-child(16n+1),.square:nth-child(16n+3),.square:nth-child(16n+5),.square:nth-child(16n+7),.square:nth-child(16n+10),.square:nth-child(16n+12),.square:nth-child(16n+14),.square:nth-child(16n+16) { background: #353535; }
-.square.conflict { color: var(--red); }
+.square.selected { color: var(--red); box-shadow: inset 0 0 0 2px var(--red); }
+.square.last-move { box-shadow: inset 0 0 0 2px rgba(225,6,0,.62); }
 .chess-actions { display: flex; justify-content: space-between; margin-top: .75rem; color: var(--gray-1); font-size: .78rem; }
 .chess-actions button { padding: 0; border: 0; border-bottom: 1px solid var(--line); background: transparent; cursor: pointer; }
 
@@ -131,6 +136,14 @@ footer p { margin: 0; }
 footer nav { display: flex; gap: 1.5rem; }
 footer a:hover { color: var(--white); }
 
+@keyframes f40-drive {
+  0% { opacity: 0; transform: translate3d(-105%, 0, 0); }
+  10% { opacity: 1; }
+  42% { transform: translate3d(-5%, -1px, 0); }
+  78% { opacity: 1; transform: translate3d(15%, 0, 0); }
+  100% { opacity: 0; transform: translate3d(108%, 0, 0); }
+}
+
 @media (max-width: 760px) {
   .site-header { height: 4rem; }
   .site-header nav { gap: 1rem; }
@@ -153,7 +166,9 @@ footer a:hover { color: var(--white); }
   .index-item[open] summary::after { content: "−"; color: var(--red); }
   .index-content { padding: 1.5rem 0 5rem; }
   .f1-content, .chess-content, .design-content { grid-template-columns: 1fr; gap: 3.5rem; }
-  .f40 strong { font-size: min(39vw, 10rem); }
+  .car-stage { min-height: 12rem; width: calc(100% + 2 * var(--page)); margin-left: calc(-1 * var(--page)); }
+  .car-stage > span { left: var(--page); }
+  .car-stage img { width: 118%; left: -22%; bottom: 5%; }
   .lights { gap: .4rem; }
   .lights i { width: min(14vw, 3.5rem); }
   #reaction-button { width: 100%; min-height: 3.25rem; }

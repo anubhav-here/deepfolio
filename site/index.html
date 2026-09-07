@@ -60,7 +60,10 @@
           <details class="index-item" open>
             <summary><span class="number">01</span><span>Formula 1</span><span class="summary-note">Ferrari · Hamilton · F40</span></summary>
             <div class="index-content f1-content">
-              <div class="f40" aria-label="Ferrari F40, 1987"><strong>F40</strong><span>1987</span></div>
+              <div class="car-stage">
+                <span>Ferrari F40 · 1987</span>
+                <img src="ferrari-f40.webp" alt="Red Ferrari F40 in side profile" />
+              </div>
               <div class="reaction" data-state="idle">
                 <p class="reaction-title">Lights out</p>
                 <div class="lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
@@ -73,10 +76,18 @@
           <details class="index-item">
             <summary><span class="number">02</span><span>Chess</span><span class="summary-note">No rating attached</span></summary>
             <div class="index-content chess-content">
-              <p>Eight queens. Place eight queens so none attack another.</p>
+              <div class="puzzle-copy">
+                <p id="puzzle-name">Scholar's mate</p>
+                <p id="puzzle-instruction">White to move. Find mate in one.</p>
+                <div class="puzzle-nav" aria-label="Chess puzzle selection">
+                  <button type="button" id="previous-puzzle" aria-label="Previous puzzle">←</button>
+                  <span id="puzzle-count">1 / 3</span>
+                  <button type="button" id="next-puzzle" aria-label="Next puzzle">→</button>
+                </div>
+              </div>
               <div class="chess-wrap">
-                <div id="chessboard" class="chessboard" role="grid" aria-label="Eight queens chess puzzle"></div>
-                <div class="chess-actions"><span id="queen-count">0 / 8</span><button type="button" id="reset-board">Reset</button></div>
+                <div id="chessboard" class="chessboard" role="grid" aria-label="Chess tactics puzzle"></div>
+                <div class="chess-actions"><span id="puzzle-status" aria-live="polite">Select a piece.</span><button type="button" id="reset-board">Reset</button></div>
               </div>
             </div>
           </details>
@@ -86,6 +97,7 @@
             <div class="index-content design-content">
               <p>Monte Carlo, rendered live in the opening frame.</p>
               <div class="parameters">
+                <label>Drift <input id="drift" type="range" min="4" max="35" value="18" /><output id="drift-output">+18%</output></label>
                 <label>Volatility <input id="volatility" type="range" min="8" max="55" value="28" /><output id="vol-output">28%</output></label>
                 <label>Paths <input id="paths" type="range" min="24" max="160" value="84" step="4" /><output id="paths-output">84</output></label>
               </div>
