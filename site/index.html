@@ -2,74 +2,126 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#050505" />
-    <meta name="description" content="Anubhav Deep — markets, mathematics, and software." />
+    <meta name="description" content="Anubhav Deep — cross-commodity quantitative research, New York." />
     <title>Anubhav Deep</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script src="script.js" defer></script>
   </head>
   <body>
-    <div class="noise" aria-hidden="true"></div>
-    <div class="aura" aria-hidden="true"></div>
-    <header class="nav">
-      <a class="monogram" href="#top" aria-label="Anubhav Deep, home">AD</a>
-      <p class="coordinates">40.7128° N<br />74.0060° W</p>
-      <a class="nav-link" href="#elsewhere">Elsewhere <span aria-hidden="true">↘</span></a>
+    <header class="site-header">
+      <a href="#top" class="mark" aria-label="Anubhav Deep, home">AD</a>
+      <nav aria-label="Primary navigation">
+        <a href="#listening">Listening</a>
+        <a href="#index">Index</a>
+        <a href="#background">Background</a>
+      </nav>
     </header>
+
     <main id="top">
-      <section class="hero" aria-labelledby="name">
-        <div class="hero-kicker reveal">
-          <span>New York</span>
-          <span class="pulse"><i></i> In motion</span>
-        </div>
-        <h1 id="name" class="display-name" aria-label="Anubhav Deep">
-          <span class="line reveal">Anubhav</span>
-          <span class="line reveal delay-one">Deep<span class="period">.</span></span>
-        </h1>
-        <div class="hero-footer reveal delay-two">
-          <p class="thesis">I work where markets,<br />mathematics, and software meet.</p>
-          <p class="scroll-note">Scroll to find the signal<br /><span>↓</span></p>
+      <section class="hero" aria-labelledby="page-title">
+        <canvas id="monte-carlo" aria-hidden="true"></canvas>
+        <div class="hero-copy">
+          <h1 id="page-title"><span>Anubhav</span><span>Deep</span></h1>
+          <div class="hero-meta">
+            <p>New York</p>
+            <p>Cross-commodity<br />quantitative research</p>
+            <button id="rerun" type="button">Run again <span aria-hidden="true">↻</span></button>
+          </div>
         </div>
       </section>
-      <section class="statement observe" aria-label="Introduction">
-        <p class="eyebrow">01 / Signal</p>
-        <p class="statement-copy">Drawn to complex systems.<br />Obsessed with simple answers.</p>
-      </section>
-      <section class="now observe" aria-labelledby="now-title">
-        <div>
-          <p class="eyebrow">02 / Now</p>
-          <h2 id="now-title">Quantitative research<br />in commodities.</h2>
+
+      <section class="section listening" id="listening" aria-labelledby="listening-title">
+        <header class="section-head">
+          <p>Listening</p>
+          <p>YouTube Music</p>
+        </header>
+        <div class="player-layout">
+          <div class="track-copy">
+            <p class="track-label">Selected from my rotation</p>
+            <h2 id="listening-title">Press play.</h2>
+            <p id="track-status" aria-live="polite">Playlist ready</p>
+            <div class="player-actions">
+              <button type="button" id="play-toggle" aria-label="Play playlist">Play</button>
+              <button type="button" id="next-track" aria-label="Play next track">Next</button>
+              <a href="https://music.youtube.com/playlist?list=PLfbmOEKBzK4Q&si=JhrLOhckpkJ4GF5D" target="_blank" rel="noreferrer">Open playlist ↗</a>
+            </div>
+          </div>
+          <div class="video-shell"><div id="youtube-player"></div></div>
         </div>
-        <div class="now-meta">
-          <p>New York City</p><p>Millennium</p><p>2025—Now</p>
+      </section>
+
+      <section class="section index" id="index" aria-labelledby="index-title">
+        <header class="section-head"><p id="index-title">Index</p><p>Four things</p></header>
+        <div class="index-list">
+          <details class="index-item" open>
+            <summary><span class="number">01</span><span>Formula 1</span><span class="summary-note">Ferrari · Hamilton · F40</span></summary>
+            <div class="index-content f1-content">
+              <div class="f40" aria-label="Ferrari F40, 1987"><strong>F40</strong><span>1987</span></div>
+              <div class="reaction" data-state="idle">
+                <p class="reaction-title">Lights out</p>
+                <div class="lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+                <button type="button" id="reaction-button">Start</button>
+                <p id="reaction-result" aria-live="polite">Test your reaction time.</p>
+              </div>
+            </div>
+          </details>
+
+          <details class="index-item">
+            <summary><span class="number">02</span><span>Chess</span><span class="summary-note">No rating attached</span></summary>
+            <div class="index-content chess-content">
+              <p>Eight queens. Place eight queens so none attack another.</p>
+              <div class="chess-wrap">
+                <div id="chessboard" class="chessboard" role="grid" aria-label="Eight queens chess puzzle"></div>
+                <div class="chess-actions"><span id="queen-count">0 / 8</span><button type="button" id="reset-board">Reset</button></div>
+              </div>
+            </div>
+          </details>
+
+          <details class="index-item">
+            <summary><span class="number">03</span><span>Art / Design</span><span class="summary-note">Probability as material</span></summary>
+            <div class="index-content design-content">
+              <p>Monte Carlo, rendered live in the opening frame.</p>
+              <div class="parameters">
+                <label>Volatility <input id="volatility" type="range" min="8" max="55" value="28" /><output id="vol-output">28%</output></label>
+                <label>Paths <input id="paths" type="range" min="24" max="160" value="84" step="4" /><output id="paths-output">84</output></label>
+              </div>
+            </div>
+          </details>
+
+          <details class="index-item">
+            <summary><span class="number">04</span><span>Tables</span><span class="summary-note">New York</span></summary>
+            <div class="index-content table-list">
+              <a href="https://www.cove-nyc.com/" target="_blank" rel="noreferrer"><span>Cove</span><span>Hudson Square ↗</span></a>
+              <a href="https://www.kabin.nyc/" target="_blank" rel="noreferrer"><span>KABIN</span><span>Hudson Square ↗</span></a>
+              <a href="https://www.osamilupstairs.com/" target="_blank" rel="noreferrer"><span>Osamil Upstairs</span><span>Koreatown ↗</span></a>
+              <a href="https://ambassadorsclubhouse.com/newyork/" target="_blank" rel="noreferrer"><span>Ambassadors Clubhouse</span><span>NoMad ↗</span></a>
+            </div>
+          </details>
         </div>
       </section>
-      <section class="trace observe" aria-labelledby="trace-title">
-        <p class="eyebrow">03 / Trace</p>
-        <h2 id="trace-title">A few coordinates<br />along the way.</h2>
-        <ol class="timeline">
-          <li><span>2025</span><strong>Carnegie Mellon</strong><em>Computational Finance</em></li>
-          <li><span>2023</span><strong>J.P. Morgan</strong><em>Quantitative Development</em></li>
-          <li><span>2020</span><strong>Shell · Red Hat</strong><em>Systems &amp; Data</em></li>
+
+      <section class="section background" id="background" aria-labelledby="background-title">
+        <header class="section-head"><p id="background-title">Background</p><p>2020—Now</p></header>
+        <ol>
+          <li><span>Now</span><strong>Millennium</strong><em>Quantitative Research · Commodities</em></li>
+          <li><span>2024</span><strong>Carnegie Mellon</strong><em>MS Computational Finance</em></li>
+          <li><span>2021</span><strong>J.P. Morgan</strong><em>Quantitative Associate</em></li>
+          <li><span>2020</span><strong>Shell · Red Hat</strong><em>Data &amp; Systems</em></li>
         </ol>
       </section>
-      <section class="closing observe" id="elsewhere" aria-labelledby="closing-title">
-        <p class="eyebrow">04 / Elsewhere</p>
-        <h2 id="closing-title">Stay curious.</h2>
-        <nav class="socials" aria-label="Social links">
-          <a href="https://www.linkedin.com/in/anubhavkaro/" target="_blank" rel="noreferrer">LinkedIn <span>↗</span></a>
-          <a href="https://github.com/anubhav-here" target="_blank" rel="noreferrer">GitHub <span>↗</span></a>
-          <a href="https://twitter.com/anubhavkaro" target="_blank" rel="noreferrer">X <span>↗</span></a>
-          <a href="https://www.instagram.com/anubhavkaro/" target="_blank" rel="noreferrer">Instagram <span>↗</span></a>
-        </nav>
-      </section>
     </main>
+
     <footer>
       <p>© <span id="year"></span> Anubhav Deep</p>
-      <p>Built with intention.</p>
-      <button type="button" id="to-top">Back to top ↑</button>
+      <nav aria-label="Social links">
+        <a href="https://www.linkedin.com/in/anubhavkaro/" target="_blank" rel="noreferrer">LinkedIn</a>
+        <a href="https://github.com/anubhav-here" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="https://www.instagram.com/anubhavkaro/" target="_blank" rel="noreferrer">Instagram</a>
+      </nav>
     </footer>
   </body>
 </html>
