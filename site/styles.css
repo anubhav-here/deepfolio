@@ -56,10 +56,12 @@ button { color: inherit; }
 h1 { margin: 0; font-size: clamp(5.2rem, 15.5vw, 16rem); line-height: .72; font-weight: 560; letter-spacing: -.085em; }
 h1 span { display: block; }
 h1 span:last-child { text-align: right; padding-right: .06em; }
-.hero-meta { margin-top: clamp(3rem, 7vh, 6rem); padding-top: 1rem; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; color: var(--gray-1); font-size: .8rem; line-height: 1.25; }
+.hero-meta { margin-top: clamp(3rem, 7vh, 6rem); padding-top: 1rem; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr minmax(16rem, 1fr); gap: 1rem; color: var(--gray-1); font-size: .8rem; line-height: 1.25; }
 .hero-meta p { margin: 0; }
-#rerun { justify-self: end; align-self: start; padding: 0 0 .35rem; border: 0; border-bottom: 1px solid var(--line); background: transparent; cursor: pointer; }
-#rerun:hover, #rerun:focus-visible { border-color: var(--red); }
+.simulation-controls { display: grid; gap: .45rem; }
+.simulation-controls label { display: grid; grid-template-columns: 4.75rem 1fr 3rem; gap: .65rem; align-items: center; font-size: .68rem; }
+.simulation-controls input { width: 100%; accent-color: var(--red); }
+.simulation-controls output { text-align: right; color: var(--white); }
 
 .section { margin: 0 var(--page); padding: clamp(6rem, 12vw, 11rem) 0; border-top: 1px solid var(--line); }
 .section-head { display: flex; justify-content: space-between; margin-bottom: clamp(4rem, 10vw, 9rem); color: var(--gray-1); font-size: .75rem; }
@@ -99,6 +101,16 @@ h1 span:last-child { text-align: right; padding-right: .06em; }
 .lights i.on { background: var(--red); box-shadow: 0 0 1.5rem rgba(225,6,0,.35); }
 #reaction-button { min-width: 7rem; min-height: 3rem; padding: .75rem 1rem; border: 1px solid var(--line); background: transparent; cursor: pointer; }
 #reaction-button.go { background: var(--red); border-color: var(--red); }
+.reaction-details { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2.5rem; }
+.benchmarks { margin: 0; border-top: 1px solid var(--line); }
+.benchmarks div, .leaderboard li { display: flex; justify-content: space-between; gap: 1rem; min-height: 2rem; align-items: center; border-bottom: 1px solid var(--line); font-size: .72rem; }
+.benchmarks dt, .leaderboard p { color: var(--gray-1); }
+.benchmarks dd { margin: 0; }
+.leaderboard p { margin: 0 0 .55rem; font-size: .72rem; }
+.leaderboard p span { float: right; color: var(--gray-2); }
+.leaderboard ol { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+.leaderboard li span { color: var(--gray-2); }
+.leaderboard li strong { font-weight: 500; }
 
 .chess-content { display: grid; grid-template-columns: 1fr auto; gap: 3rem; align-items: start; }
 .puzzle-copy > p:first-child, .design-content > p { margin: 0; max-width: 25ch; color: var(--gray-1); font-size: clamp(1.6rem, 3vw, 3.2rem); line-height: 1.05; letter-spacing: -.04em; }
@@ -114,11 +126,7 @@ h1 span:last-child { text-align: right; padding-right: .06em; }
 .chess-actions { display: flex; justify-content: space-between; margin-top: .75rem; color: var(--gray-1); font-size: .78rem; }
 .chess-actions button { padding: 0; border: 0; border-bottom: 1px solid var(--line); background: transparent; cursor: pointer; }
 
-.design-content { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
-.parameters { border-top: 1px solid var(--line); }
-.parameters label { display: grid; grid-template-columns: 7rem 1fr 3rem; gap: 1rem; align-items: center; min-height: 4.5rem; border-bottom: 1px solid var(--line); color: var(--gray-1); font-size: .78rem; }
-.parameters input { width: 100%; accent-color: var(--red); }
-.parameters output { text-align: right; color: var(--white); }
+.design-content { display: grid; grid-template-columns: 1fr; gap: 3rem; }
 
 .table-list { padding-top: 0; }
 .table-list a { display: grid; grid-template-columns: 1fr auto; gap: 1rem; padding: 1.2rem 0; border-top: 1px solid var(--line); }
@@ -152,7 +160,7 @@ footer a:hover { color: var(--white); }
   h1 { font-size: clamp(5.2rem, 25.5vw, 9rem); line-height: .77; }
   h1 span:last-child { text-align: left; }
   .hero-meta { grid-template-columns: 1fr 1.35fr; }
-  #rerun { grid-column: 1 / -1; justify-self: start; margin-top: 1.25rem; min-height: 2.75rem; }
+  .simulation-controls { grid-column: 1 / -1; margin-top: 1.25rem; max-width: 30rem; }
   .section { padding: 6rem 0; }
   .section-head { margin-bottom: 4rem; }
   .player-layout { grid-template-columns: 1fr; gap: 2.5rem; }
@@ -172,9 +180,9 @@ footer a:hover { color: var(--white); }
   .lights { gap: .4rem; }
   .lights i { width: min(14vw, 3.5rem); }
   #reaction-button { width: 100%; min-height: 3.25rem; }
+  .reaction-details { grid-template-columns: 1fr; gap: 2rem; }
   .chessboard { width: 100%; }
   .square { min-width: 0; min-height: 0; touch-action: manipulation; }
-  .parameters label { grid-template-columns: 5.8rem 1fr 2.5rem; }
   .table-list a { min-height: 4.5rem; align-items: center; }
   .table-list a span:first-child { font-size: 1.5rem; }
   .table-list a span:last-child { max-width: 7rem; text-align: right; }

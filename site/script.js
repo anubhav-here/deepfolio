@@ -1,7 +1,6 @@
 const playlistId = "PLfbmOEKBzK4Q";
 const canvas = document.querySelector("#monte-carlo");
 const context = canvas.getContext("2d");
-const rerunButton = document.querySelector("#rerun");
 const driftInput = document.querySelector("#drift");
 const volatilityInput = document.querySelector("#volatility");
 const pathInput = document.querySelector("#paths");
@@ -67,13 +66,13 @@ function drawSimulation(now) {
     path.slice(0, visibleSteps).forEach((value, index) => {
       const x = (index / (path.length - 1)) * width;
       const normalized = (value - min) / range;
-      const y = height * (.84 - normalized * .68);
+      const y = height * (.9 - normalized * .8);
       if (index === 0) context.moveTo(x, y);
       else context.lineTo(x, y);
     });
     const isRed = pathIndex === simulation.length - 1;
-    context.strokeStyle = isRed ? "rgba(225,6,0,.9)" : "rgba(244,243,239,.085)";
-    context.lineWidth = isRed ? 1.4 : .7;
+    context.strokeStyle = isRed ? "rgba(225,6,0,.94)" : "rgba(244,243,239,.27)";
+    context.lineWidth = isRed ? 1.6 : .85;
     context.stroke();
   });
   requestAnimationFrame(drawSimulation);
@@ -86,7 +85,6 @@ function refreshSimulation() {
   makeSimulation();
 }
 
-rerunButton.addEventListener("click", makeSimulation);
 driftInput.addEventListener("input", refreshSimulation);
 volatilityInput.addEventListener("input", refreshSimulation);
 pathInput.addEventListener("input", refreshSimulation);
@@ -147,25 +145,44 @@ let reactionState = "idle";
 let lightTimer;
 let goTimer;
 let goTime = 0;
+const leaderboard = document.querySelector("#reaction-leaderboard");
+const leaderboardKey = "deepfolio-reaction-board";
 
 function resetLights() {
   lights.forEach((light) => light.classList.remove("on"));
   reactionButton.classList.remove("go");
 }
 
+function readScores() {
+  try { return JSON.parse(window.localStorage.getItem(leaderboardKey) || "[]"); }
+  catch { return []; }
+}
+
+function renderScores() {
+  const scores = readScores().filter(Number.isFinite).sort((left, right) => left - right).slice(0, 5);
+  leaderboard.innerHTML = scores.length
+    ? scores.map((score, index) => `<li><span>${index + 1}</span><strong>${score} ms</strong></li>`).join("")
+    : "<li><span>—</span><strong>Set a time</strong></li>";
+}
+
+function saveScore(score) {
+  const scores = [...readScores(), score].filter(Number.isFinite).sort((left, right) => left - right).slice(0, 5);
+  try { window.localStorage.setItem(leaderboardKey, JSON.stringify(scores)); } catch { /* local storage unavailable */ }
+  renderScores();
+}
+
 function startReaction() {
-  window.clearInterval(lightTimer);
+  window.clearTimeout(lightTimer);
   window.clearTimeout(goTimer);
   resetLights();
   reactionState = "waiting";
   reactionButton.textContent = "Wait";
   reactionResult.textContent = "Wait for lights out.";
   let lit = 0;
-  lightTimer = window.setInterval(() => {
+  function lightNext() {
     lights[lit]?.classList.add("on");
     lit += 1;
     if (lit === lights.length) {
-      window.clearInterval(lightTimer);
       goTimer = window.setTimeout(() => {
         resetLights();
         reactionState = "go";
@@ -173,15 +190,18 @@ function startReaction() {
         reactionButton.textContent = "GO";
         reactionButton.classList.add("go");
         reactionResult.textContent = "Tap now.";
-      }, 900 + Math.random() * 2200);
+      }, 1100 + Math.random() * 3100);
+      return;
     }
-  }, 380);
+    lightTimer = window.setTimeout(lightNext, 430 + Math.random() * 470);
+  }
+  lightTimer = window.setTimeout(lightNext, 380 + Math.random() * 420);
 }
 
 reactionButton.addEventListener("click", () => {
   if (reactionState === "idle" || reactionState === "done") startReaction();
   else if (reactionState === "waiting") {
-    window.clearInterval(lightTimer);
+    window.clearTimeout(lightTimer);
     window.clearTimeout(goTimer);
     reactionState = "done";
     reactionButton.textContent = "Again";
@@ -193,8 +213,10 @@ reactionButton.addEventListener("click", () => {
     reactionButton.textContent = "Again";
     reactionButton.classList.remove("go");
     reactionResult.textContent = `${elapsed} ms`;
+    saveScore(elapsed);
   }
 });
+renderScores();
 
 const board = document.querySelector("#chessboard");
 const resetBoard = document.querySelector("#reset-board");

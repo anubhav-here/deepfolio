@@ -29,7 +29,11 @@
           <div class="hero-meta">
             <p>New York</p>
             <p>Cross-commodity<br />quantitative research</p>
-            <button id="rerun" type="button">Run again <span aria-hidden="true">↻</span></button>
+            <div class="simulation-controls" aria-label="Monte Carlo controls">
+              <label>Drift <input id="drift" type="range" min="4" max="35" value="18" /><output id="drift-output">+18%</output></label>
+              <label>Volatility <input id="volatility" type="range" min="8" max="55" value="28" /><output id="vol-output">28%</output></label>
+              <label>Paths <input id="paths" type="range" min="24" max="96" value="56" step="4" /><output id="paths-output">56</output></label>
+            </div>
           </div>
         </div>
       </section>
@@ -68,7 +72,18 @@
                 <p class="reaction-title">Lights out</p>
                 <div class="lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
                 <button type="button" id="reaction-button">Start</button>
-                <p id="reaction-result" aria-live="polite">Test your reaction time.</p>
+                <p id="reaction-result" aria-live="polite">Wait for lights out.</p>
+                <div class="reaction-details">
+                  <dl class="benchmarks" aria-label="Reaction time benchmarks">
+                    <div><dt>sharp</dt><dd>&lt;220 ms</dd></div>
+                    <div><dt>quick</dt><dd>220–280</dd></div>
+                    <div><dt>steady</dt><dd>280–350</dd></div>
+                  </dl>
+                  <div class="leaderboard" aria-live="polite">
+                    <p>Your board <span>this device</span></p>
+                    <ol id="reaction-leaderboard"></ol>
+                  </div>
+                </div>
               </div>
             </div>
           </details>
@@ -95,12 +110,7 @@
           <details class="index-item">
             <summary><span class="number">03</span><span>Art / Design</span><span class="summary-note">Probability as material</span></summary>
             <div class="index-content design-content">
-              <p>Monte Carlo, rendered live in the opening frame.</p>
-              <div class="parameters">
-                <label>Drift <input id="drift" type="range" min="4" max="35" value="18" /><output id="drift-output">+18%</output></label>
-                <label>Volatility <input id="volatility" type="range" min="8" max="55" value="28" /><output id="vol-output">28%</output></label>
-                <label>Paths <input id="paths" type="range" min="24" max="160" value="84" step="4" /><output id="paths-output">84</output></label>
-              </div>
+              <p>The Monte Carlo lives in the opening frame.</p>
             </div>
           </details>
 
