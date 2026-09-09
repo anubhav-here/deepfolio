@@ -37,7 +37,7 @@ button { color: inherit; }
   padding: env(safe-area-inset-top) var(--page) 0;
   background: linear-gradient(to bottom, rgba(5,5,5,.92), rgba(5,5,5,0));
 }
-.mark { font-size: .95rem; font-weight: 650; letter-spacing: -.06em; }
+.mark { font-family: "Noto Sans Devanagari", "Kohinoor Devanagari", sans-serif; font-size: 1rem; font-weight: 650; letter-spacing: 0; }
 .site-header nav { display: flex; gap: clamp(1.1rem, 3vw, 2.6rem); }
 .site-header nav a { color: var(--gray-1); font-size: .78rem; }
 .site-header nav a:hover, .site-header nav a:focus-visible { color: var(--white); }
