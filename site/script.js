@@ -57,7 +57,7 @@ function runGlobe() {
     const radius = Math.min(width, height) * .285;
     const cx = width / 2;
     const cy = height * .47;
-    const centerLongitude = Math.sin(time * .00017) * .18;
+    const centerLongitude = Math.sin(time * .00065) * .18;
     ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2); ctx.strokeStyle = 'rgba(241,240,235,.3)'; ctx.lineWidth = 1; ctx.stroke();
     ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, radius - .5, 0, Math.PI * 2); ctx.clip();
     features.forEach((feature) => {
@@ -235,17 +235,76 @@ function runListening() {
   if (!play || !next || !title || !status) return;
   const updateTrack = () => { const data = youtubePlayer?.getVideoData?.(); if (data?.title) title.textContent = data.title; if (data?.author) status.textContent = data.author; };
   window.onYouTubeIframeAPIReady = () => {
-    youtubePlayer = new YT.Player('youtube-player', { width: '640', height: '360', playerVars: { listType: 'playlist', list: playlistId, playsinline: 1, rel: 0, modestbranding: 1 }, events: { onReady: () => { youtubePlayer.setShuffle?.(true); setTimeout(updateTrack, 400); }, onStateChange: (event) => { const playing = event.data === YT.PlayerState.PLAYING; play.textContent = playing ? 'Pause' : 'Play'; updateTrack(); }, onError: () => { status.textContent = 'Open the playlist in YouTube Music'; } } });
+    youtubePlayer = new YT.Player('youtube-player', { width: '640', height: '360', playerVars: { listType: 'playlist', list: playlistId, playsinline: 1, rel: 0, modestbranding: 1 }, events: { onReady: () => { youtubePlayer.setShuffle?.(true); setTimeout(() => { youtubePlayer.nextVideo?.(); updateTrack(); }, 120); }, onStateChange: (event) => { const playing = event.data === YT.PlayerState.PLAYING; play.textContent = playing ? 'Pause' : 'Play'; updateTrack(); }, onError: () => { status.textContent = 'Open the playlist in YouTube Music'; } } });
   };
   if (window.YT?.Player) window.onYouTubeIframeAPIReady();
   play.addEventListener('click', () => { if (!youtubePlayer) return; youtubePlayer.getPlayerState() === YT.PlayerState.PLAYING ? youtubePlayer.pauseVideo() : youtubePlayer.playVideo(); });
   next.addEventListener('click', () => youtubePlayer?.nextVideo());
 }
 
+function runChessV2() {
+  const board = $('#chess-board');
+  const status = $('#chess-status');
+  const shuffle = $('#chess-shuffle');
+  const count = $('#chess-count');
+  if (!board || !status || !shuffle || !count) return;
+  const files = 'abcdefgh';
+  const sources = [[1, 1], [1, 2], [1, 3], [1, 4], [1, 5], [2, 7], [3, 7]];
+  const variants = [[false, false], [true, false], [false, true], [true, true]];
+  const toSquare = ([file, rank], flipFile, flipRank) => `${files[flipFile ? 7 - file : file]}${flipRank ? 9 - rank : rank}`;
+  const puzzles = variants.flatMap(([flipFile, flipRank]) => sources.map((source) => ({
+    queen: toSquare(source, flipFile, flipRank), target: toSquare([1, 7], flipFile, flipRank),
+    pieces: {
+      [toSquare([0, 8], flipFile, flipRank)]: { glyph: '♚', side: 'black' },
+      [toSquare([2, 6], flipFile, flipRank)]: { glyph: '♔', side: 'white' },
+      [toSquare(source, flipFile, flipRank)]: { glyph: '♕', side: 'white' }
+    }
+  })));
+  let index = Math.floor(Math.random() * puzzles.length);
+  let pieces = {};
+  let selected = null;
+  let legal = [];
+  let invalid = null;
+  let movedTo = null;
+  let solved = false;
+  const directions = [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+  function queenMoves(square) {
+    const file = files.indexOf(square[0]); const rank = Number(square[1]); const moves = [];
+    directions.forEach(([dx, dy]) => { let x = file + dx; let y = rank + dy; while (x >= 0 && x < 8 && y >= 1 && y <= 8) { const target = `${files[x]}${y}`; if (pieces[target]?.side === 'white') break; moves.push(target); if (pieces[target]) break; x += dx; y += dy; } });
+    return moves;
+  }
+  function render() {
+    board.innerHTML = '';
+    for (let rank = 8; rank >= 1; rank -= 1) for (let file = 0; file < 8; file += 1) {
+      const square = `${files[file]}${rank}`; const piece = pieces[square]; const button = document.createElement('button');
+      button.type = 'button'; button.dataset.square = square; button.setAttribute('aria-label', square); button.className = `chess-square ${(rank + file) % 2 ? 'light' : ''}`;
+      if (selected === square) button.classList.add('selected');
+      if (legal.includes(square)) button.classList.add(piece?.side === 'black' ? 'capture' : 'legal');
+      if (invalid === square) button.classList.add('invalid');
+      if (movedTo === square) button.classList.add(solved ? 'answer' : 'last-move');
+      if (piece) { button.textContent = piece.glyph; button.classList.add(`piece-${piece.side}`); }
+      board.append(button);
+    }
+  }
+  function load(nextIndex) { index = nextIndex; pieces = { ...puzzles[index].pieces }; selected = null; legal = []; invalid = null; movedTo = null; solved = false; count.textContent = `${String(index + 1).padStart(2, '0')} / ${puzzles.length}`; status.textContent = 'White to move · mate in one.'; render(); }
+  board.addEventListener('click', (event) => {
+    const square = event.target.closest('[data-square]')?.dataset.square; if (!square || solved) return;
+    const piece = pieces[square];
+    if (piece?.side === 'white' && piece.glyph === '♕') { selected = square; legal = queenMoves(square); status.textContent = 'Queen selected · choose a legal square.'; render(); return; }
+    if (!selected) { invalid = square; status.textContent = 'Select the white queen first.'; render(); setTimeout(() => { invalid = null; render(); }, 450); return; }
+    if (!legal.includes(square)) { invalid = square; selected = null; legal = []; status.textContent = 'That square is not available.'; render(); setTimeout(() => { invalid = null; render(); }, 450); return; }
+    const from = selected; pieces = { ...pieces }; delete pieces[from]; pieces[square] = { glyph: '♕', side: 'white' }; selected = null; legal = []; movedTo = square;
+    if (square === puzzles[index].target) { solved = true; status.textContent = `Q${square}# · checkmate.`; render(); }
+    else { status.textContent = 'Not mate. Resetting the position.'; render(); setTimeout(() => load(index), 850); }
+  });
+  shuffle.addEventListener('click', () => load((index + 1 + Math.floor(Math.random() * (puzzles.length - 1))) % puzzles.length));
+  load(index);
+}
+
 runPreloader();
 runGlobe();
 runSimulation();
-runChess();
+runChessV2();
 runLightsOut();
 runListening();
 const year = $('#year');
