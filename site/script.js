@@ -19,80 +19,63 @@ function runGlobe() {
   const canvas = $('#globe');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  const worldUrl = 'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson';
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let features = [];
   let width = 0;
   let height = 0;
-  let ratio = 1;
-  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  fetch(worldUrl).then((response) => response.ok ? response.json() : null).then((world) => { features = world?.features || []; }).catch(() => { features = []; });
   function resize() {
-    ratio = Math.min(devicePixelRatio || 1, 2);
-    width = canvas.clientWidth;
-    height = canvas.clientHeight;
-    canvas.width = Math.round(width * ratio);
-    canvas.height = Math.round(height * ratio);
+    const ratio = Math.min(devicePixelRatio || 1, 2);
+    width = canvas.clientWidth; height = canvas.clientHeight;
+    canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio);
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  }
+  function project([longitude, latitude], cx, cy, radius, centerLongitude) {
+    const lon = longitude * Math.PI / 180 - centerLongitude;
+    const lat = latitude * Math.PI / 180;
+    const visible = Math.cos(lat) * Math.cos(lon);
+    if (visible <= 0) return null;
+    return { x: cx + radius * Math.cos(lat) * Math.sin(lon), y: cy - radius * Math.sin(lat), visible };
+  }
+  function traceRing(ring, cx, cy, radius, centerLongitude) {
+    let drawing = false;
+    const stride = Math.max(1, Math.floor(ring.length / 220));
+    for (let index = 0; index < ring.length; index += stride) {
+      const point = project(ring[index], cx, cy, radius, centerLongitude);
+      if (!point) { drawing = false; continue; }
+      if (!drawing) { ctx.moveTo(point.x, point.y); drawing = true; } else ctx.lineTo(point.x, point.y);
+    }
+  }
+  function traceFeature(feature, cx, cy, radius, centerLongitude) {
+    const polygons = feature.geometry?.type === 'Polygon' ? [feature.geometry.coordinates] : feature.geometry?.coordinates || [];
+    ctx.beginPath();
+    polygons.forEach((polygon) => polygon.forEach((ring) => traceRing(ring, cx, cy, radius, centerLongitude)));
   }
   function draw(time = 0) {
     ctx.clearRect(0, 0, width, height);
-    const radius = Math.min(width, height) * .265;
-    const x = width / 2;
-    const y = height * .48;
-    ctx.save();
-    ctx.strokeStyle = 'rgba(241,240,235,.26)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(x, y, radius * .73, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(241,240,235,.09)';
-    ctx.stroke();
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(x, y, radius - .5, 0, Math.PI * 2);
-    ctx.clip();
-    const turn = time * .00018;
-    [-.66, -.33, 0, .33, .66].forEach((offset) => {
-      ctx.beginPath();
-      ctx.ellipse(x, y + offset * radius, radius * Math.sqrt(1 - offset * offset), radius * .16, 0, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(241,240,235,.1)';
-      ctx.stroke();
+    const radius = Math.min(width, height) * .285;
+    const cx = width / 2;
+    const cy = height * .47;
+    const centerLongitude = Math.sin(time * .00017) * .18;
+    ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2); ctx.strokeStyle = 'rgba(241,240,235,.3)'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, radius - .5, 0, Math.PI * 2); ctx.clip();
+    features.forEach((feature) => {
+      const highlighted = feature.id === 'IND' || feature.id === 'USA';
+      traceFeature(feature, cx, cy, radius, centerLongitude);
+      if (highlighted) { ctx.fillStyle = feature.id === 'IND' ? 'rgba(219,30,25,.62)' : 'rgba(241,240,235,.28)'; ctx.fill(); }
+      ctx.strokeStyle = highlighted ? '#db1e19' : 'rgba(241,240,235,.2)'; ctx.lineWidth = highlighted ? 1.15 : .45; ctx.stroke();
     });
-    for (let index = 0; index < 7; index += 1) {
-      const phase = turn + index * Math.PI / 7;
-      ctx.beginPath();
-      for (let step = 0; step <= 80; step += 1) {
-        const latitude = -Math.PI / 2 + step / 80 * Math.PI;
-        const gx = x + Math.sin(phase) * Math.cos(latitude) * radius;
-        const gy = y + Math.sin(latitude) * radius;
-        if (step === 0) ctx.moveTo(gx, gy); else ctx.lineTo(gx, gy);
-      }
-      ctx.strokeStyle = 'rgba(241,240,235,.1)';
-      ctx.stroke();
+    ctx.restore();
+    const india = project([78.9629, 20.5937], cx, cy, radius, centerLongitude);
+    const ny = project([-74.006, 40.7128], cx, cy, radius, centerLongitude);
+    if (india && ny) {
+      ctx.beginPath(); ctx.setLineDash([5, 8]); ctx.lineDashOffset = -time * .016; ctx.moveTo(india.x, india.y); ctx.quadraticCurveTo(cx, cy - radius * .86, ny.x, ny.y); ctx.strokeStyle = '#db1e19'; ctx.lineWidth = 1.25; ctx.stroke(); ctx.setLineDash([]);
+      [[india, 'INDIA'], [ny, 'UNITED STATES']].forEach(([point, label], index) => { const pulse = 1 + Math.sin(time * .003 + index) * .2; ctx.beginPath(); ctx.arc(point.x, point.y, 3.4 * pulse, 0, Math.PI * 2); ctx.fillStyle = '#db1e19'; ctx.fill(); ctx.fillStyle = '#f1f0eb'; ctx.font = '10px -apple-system, BlinkMacSystemFont, sans-serif'; ctx.fillText(label, point.x + 8, point.y - 8); });
     }
-    ctx.restore();
-    const ny = { x: x - radius * .43, y: y - radius * .2 };
-    const india = { x: x + radius * .5, y: y + radius * .22 };
-    ctx.beginPath();
-    ctx.setLineDash([5, 8]);
-    ctx.lineDashOffset = -time * .016;
-    ctx.moveTo(ny.x, ny.y);
-    ctx.quadraticCurveTo(x, y - radius * .8, india.x, india.y);
-    ctx.strokeStyle = 'rgba(219,30,25,.88)';
-    ctx.stroke();
-    ctx.setLineDash([]);
-    [ny, india].forEach((point, index) => {
-      const pulse = 1 + Math.sin(time * .003 + index) * .22;
-      ctx.beginPath();
-      ctx.arc(point.x, point.y, 3.2 * pulse, 0, Math.PI * 2);
-      ctx.fillStyle = '#db1e19';
-      ctx.fill();
-    });
-    ctx.restore();
     if (!reduceMotion) requestAnimationFrame(draw);
   }
-  resize();
-  addEventListener('resize', resize, { passive: true });
-  requestAnimationFrame(draw);
+  resize(); addEventListener('resize', resize, { passive: true }); requestAnimationFrame(draw);
 }
 
 function normalRandom() {
@@ -163,9 +146,13 @@ function runChess() {
   const status = $('#chess-status');
   const reset = $('#chess-reset');
   if (!board || !status || !reset) return;
-  const pieces = { g8: '♚', g7: '♟', h7: '♟', h5: '♕', g2: '♙', h2: '♙', g1: '♔' };
+  const opening = { g8: { glyph: '♚', side: 'black' }, g7: { glyph: '♟', side: 'black' }, h7: { glyph: '♟', side: 'black' }, h5: { glyph: '♕', side: 'white' }, g2: { glyph: '♙', side: 'white' }, h2: { glyph: '♙', side: 'white' }, g1: { glyph: '♔', side: 'white' } };
+  const legalMoves = ['h6', 'h7', 'g5', 'f5', 'e5', 'd5', 'c5', 'b5', 'a5', 'g6', 'f7', 'e8', 'g4', 'f3', 'e2', 'd1'];
+  let pieces = { ...opening };
   let selected = null;
   let solved = false;
+  let invalid = null;
+  let movedTo = null;
   function render() {
     board.innerHTML = '';
     for (let rank = 8; rank >= 1; rank -= 1) {
@@ -175,10 +162,13 @@ function runChess() {
         button.type = 'button';
         button.className = `chess-square ${(rank + file) % 2 ? 'light' : ''}`;
         if (selected === square) button.classList.add('selected');
+        if (selected === 'h5' && legalMoves.includes(square)) button.classList.add(pieces[square]?.side === 'black' ? 'capture' : 'legal');
         if (solved && square === 'e8') button.classList.add('answer');
+        if (invalid === square) button.classList.add('invalid');
+        if (movedTo === square) button.classList.add('last-move');
         button.dataset.square = square;
         button.setAttribute('aria-label', square);
-        button.textContent = pieces[square] || '';
+        if (pieces[square]) { button.textContent = pieces[square].glyph; button.classList.add(`piece-${pieces[square].side}`); }
         board.append(button);
       }
     }
@@ -186,12 +176,16 @@ function runChess() {
   board.addEventListener('click', (event) => {
     const square = event.target.closest('[data-square]')?.dataset.square;
     if (!square || solved) return;
-    if (!selected && square === 'h5') { selected = square; status.textContent = 'Queen selected.'; }
-    else if (selected === 'h5' && square === 'e8') { solved = true; selected = null; status.textContent = 'Qe8# · clean.'; }
-    else { selected = null; status.textContent = 'Try again.'; }
+    if (!selected && square === 'h5') { selected = square; status.textContent = 'Queen selected · choose a legal square.'; }
+    else if (!selected) { invalid = square; status.textContent = 'Select the white queen first.'; setTimeout(() => { invalid = null; render(); }, 480); }
+    else if (selected === 'h5' && legalMoves.includes(square)) {
+      pieces = { ...pieces }; delete pieces.h5; pieces[square] = { glyph: '♕', side: 'white' }; selected = null; movedTo = square;
+      if (square === 'e8') { solved = true; status.textContent = 'Qe8# · checkmate.'; }
+      else { status.textContent = 'Not mate. Resetting the position.'; setTimeout(() => { pieces = { ...opening }; movedTo = null; status.textContent = 'White to move · mate in one.'; render(); }, 850); }
+    } else { invalid = square; selected = null; status.textContent = 'That square is not available.'; setTimeout(() => { invalid = null; render(); }, 480); }
     render();
   });
-  reset.addEventListener('click', () => { selected = null; solved = false; status.textContent = 'White to move · mate in one.'; render(); });
+  reset.addEventListener('click', () => { pieces = { ...opening }; selected = null; solved = false; invalid = null; movedTo = null; status.textContent = 'White to move · mate in one.'; render(); });
   render();
 }
 
