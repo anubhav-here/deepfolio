@@ -1,0 +1,15 @@
+/* The timeline is one field, rather than a stack of oversized title cards. */
+.background{isolation:isolate}
+#monte-carlo{position:absolute;z-index:-1;inset:0;width:100%;height:100%;opacity:.42;pointer-events:none}
+.timeline-event{display:block;min-height:clamp(6.25rem,10vw,9rem);padding:clamp(1.35rem,2.5vw,2rem) 0 clamp(1.35rem,2.5vw,2rem) calc(10rem + 4vw)}
+.event-copy strong{font-size:clamp(1.65rem,3vw,3.15rem);letter-spacing:-.06em;line-height:1}
+.event-copy p{margin-top:.45rem;font-size:.78rem}
+@media(max-width:760px){.timeline-event{padding:1.8rem 0 1.8rem 1.5rem}.timeline-event:before{top:2.5rem}.event-copy strong{font-size:clamp(1.7rem,8vw,2.35rem)}}
+.chess-square{position:relative;transition:background .16s ease,box-shadow .16s ease,transform .16s ease}
+.chess-square.piece-white{color:#f7f5ed;-webkit-text-stroke:.75px #1a1a18;text-shadow:0 1px 2px #000}
+.chess-square.piece-black{color:#11110f;-webkit-text-stroke:.65px #b9b6ad;text-shadow:0 1px 0 rgba(255,255,255,.35)}
+.chess-square.legal:after{content:"";position:absolute;width:18%;aspect-ratio:1;border-radius:50%;background:rgba(219,30,25,.8)}
+.chess-square.capture{box-shadow:inset 0 0 0 3px rgba(219,30,25,.85)}
+.chess-square.last-move{box-shadow:inset 0 0 0 3px rgba(241,240,235,.65)}
+.chess-square.invalid{background:#71231f!important;transform:scale(.94)}
+.chess-square.answer{box-shadow:inset 0 0 0 3px var(--red)}
