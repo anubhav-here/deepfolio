@@ -38,7 +38,7 @@
       <section class="play section" id="play" aria-labelledby="play-title">
         <header class="section-head"><p id="play-title">Play</p><p>Two small problems</p></header>
         <div class="game-grid">
-          <article class="game-panel chess-panel"><div class="game-head"><p>Chess</p><button id="chess-reset" type="button">Reset</button></div><p id="chess-status" aria-live="polite">White to move · mate in one.</p><div id="chess-board" role="grid" aria-label="Chess puzzle"></div><p class="game-note">Find the queen move.</p></article>
+          <article class="game-panel chess-panel"><div class="game-head"><p>Chess <span id="chess-count"></span></p><button id="chess-shuffle" type="button">Shuffle</button></div><p id="chess-status" aria-live="polite">White to move · mate in one.</p><div id="chess-board" role="grid" aria-label="Chess puzzle"></div><p class="game-note">Find the queen move.</p></article>
           <article class="game-panel reaction" data-state="idle"><div class="game-head"><p>Lights Out</p><p>Reaction</p></div><div class="lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><button type="button" id="reaction-button">Start</button><p id="reaction-result" aria-live="polite">Wait for lights out.</p><div class="reaction-details"><dl class="benchmarks" aria-label="Reaction time benchmarks"><div><dt>sharp</dt><dd>&lt;220 ms</dd></div><div><dt>quick</dt><dd>220–280</dd></div><div><dt>steady</dt><dd>280–350</dd></div></dl><div class="leaderboard" aria-live="polite"><p>Your board <span>this device</span></p><ol id="reaction-leaderboard"></ol></div></div></article>
         </div>
       </section>
