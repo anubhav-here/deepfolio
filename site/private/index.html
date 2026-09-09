@@ -12,11 +12,15 @@
   <link rel="apple-touch-icon" href="deepfolio-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="private.css">
+  <link rel="stylesheet" href="private-theme.css">
+  <link rel="stylesheet" href="private-motion.css">
   <script defer src="vendor/supabase.js"></script>
   <script defer src="private.js"></script>
 </head>
 <body>
-  <header class="site-header"><a href="/" aria-label="Anubhav Deep, home">अनुभव</a><span>PRIVATE</span><button id="signout" class="text-button" hidden>Sign out</button></header>
+  <div class="preloader" aria-hidden="true"><span>DEEPFOLIO</span><strong id="load-number">000</strong></div>
+  <canvas id="deep-field" aria-hidden="true"></canvas>
+  <header class="site-header"><a href="/" class="wordmark" aria-label="Anubhav Deep, home">अनुभव</a><details class="profile-menu" id="profile-menu"><summary>Menu</summary><div><button id="theme-toggle" type="button">Dark mode</button><details class="account"><summary>Account</summary><form id="password-form"><label for="new-password">Set or change password</label><input id="new-password" type="password" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters"><label for="confirm-password">Confirm password</label><input id="confirm-password" type="password" autocomplete="new-password" minlength="8" required placeholder="Repeat password"><button>Save password</button></form></details><button id="signout" type="button" hidden>Sign out</button></div></details></header>
   <main>
     <section id="login" class="login-card">
       <p class="kicker">DEEPFOLIO</p>
@@ -29,7 +33,6 @@
     <section id="workspace" hidden>
       <div class="topline"><div><p id="date" class="kicker"></p><h1 id="view-title">Today</h1></div><button id="new-entry" class="primary add-button">+ Add</button></div>
       <p id="summary" class="summary"></p>
-      <details class="account"><summary>Account</summary><form id="password-form"><label for="new-password">Set or change app password</label><input id="new-password" type="password" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters"><label for="confirm-password">Confirm password</label><input id="confirm-password" type="password" autocomplete="new-password" minlength="8" required placeholder="Repeat password"><button>Save password</button></form></details>
       <nav aria-label="Private workspace"><button data-view="today" aria-current="page">Today</button><button data-view="notes">Notes</button><button data-view="watch">Watchlist</button><button data-view="plans">Plans</button><button data-view="goals">Goals</button></nav>
       <section id="composer" class="composer" hidden>
         <div class="composer-heading"><h2 id="composer-title">Add something</h2><button id="cancel" class="text-button" type="button">Close</button></div>
