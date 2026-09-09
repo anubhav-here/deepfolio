@@ -7,6 +7,20 @@ let simulation = [];
 let simulationStart = performance.now();
 let isMusicPlaying = false;
 
+function runPreloader() {
+  const loader = document.querySelector('.preloader');
+  const number = document.querySelector('#load-number');
+  const started = performance.now();
+  const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 1050;
+  function tick(now) {
+    const progress = Math.min(1, (now - started) / duration);
+    number.textContent = String(Math.round(progress * 100)).padStart(3, '0');
+    if (progress < 1) requestAnimationFrame(tick);
+    else setTimeout(() => loader.classList.add('done'), 120);
+  }
+  requestAnimationFrame(tick);
+}
+
 function normalRandom() {
   const u = Math.max(Math.random(), Number.EPSILON);
   const v = Math.random();
@@ -207,3 +221,4 @@ document.querySelectorAll(".index-item").forEach((item) => item.addEventListener
   document.querySelectorAll(".index-item").forEach((other) => { if (other !== item) other.open = false; });
 }));
 document.querySelector("#year").textContent = new Date().getFullYear();
+runPreloader();
