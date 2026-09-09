@@ -14,18 +14,20 @@
   <link rel="stylesheet" href="private.css">
   <link rel="stylesheet" href="private-theme.css">
   <link rel="stylesheet" href="private-motion.css">
+  <link rel="stylesheet" href="private-public.css">
   <script defer src="vendor/supabase.js"></script>
   <script defer src="private.js"></script>
 </head>
 <body>
   <div class="preloader" aria-hidden="true"><span>DEEPFOLIO</span><strong id="load-number">000</strong></div>
   <canvas id="deep-field" aria-hidden="true"></canvas>
+  <canvas id="private-globe" aria-hidden="true"></canvas>
   <header class="site-header"><a href="/" class="site-name" aria-label="Deepfolio home">Deepfolio</a><details class="profile-menu" id="profile-menu"><summary>अनुभव</summary><div><button id="theme-toggle" type="button">Dark mode</button><details class="account"><summary>Account</summary><form id="password-form"><label for="new-password">Set or change password</label><input id="new-password" type="password" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters"><label for="confirm-password">Confirm password</label><input id="confirm-password" type="password" autocomplete="new-password" minlength="8" required placeholder="Repeat password"><button>Save password</button></form></details><button id="signout" type="button" hidden>Sign out</button></div></details></header>
   <main>
     <section id="login" class="login-card">
-      <p class="kicker">DEEPFOLIO</p>
-      <h1>A place to keep things.</h1>
-      <p>Notes, plans, and the things worth following up on.</p>
+      <p class="kicker">PRIVATE INDEX</p>
+      <h1>Keep the thread.</h1>
+      <p>Notes, plans, and the things worth returning to.</p>
       <form id="login-form"><label for="email">Email</label><input id="email" type="email" autocomplete="email" required placeholder="you@example.com"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required placeholder="Your Deepfolio password"><button class="primary">Sign in</button></form>
       <button id="send-link" class="recovery-link" type="button">Use an email link instead</button>
     </section>
