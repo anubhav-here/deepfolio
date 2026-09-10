@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="private-theme.css">
   <link rel="stylesheet" href="private-motion.css">
   <link rel="stylesheet" href="private-public.css">
+  <link rel="stylesheet" href="calendar.css">
   <script defer src="vendor/supabase.js"></script>
   <script defer src="private.js"></script>
 </head>
@@ -35,7 +36,7 @@
     <section id="workspace" hidden>
       <div class="topline"><div><p id="date" class="kicker"></p><h1 id="view-title">Today</h1></div><button id="new-entry" class="primary add-button">+ Add</button></div>
       <p id="summary" class="summary"></p>
-      <nav aria-label="Private workspace"><button data-view="today" aria-current="page">Today</button><button data-view="notes">Notes</button><button data-view="watch">Watchlist</button><button data-view="plans">Plans</button><button data-view="goals">Goals</button></nav>
+      <nav aria-label="Private workspace"><button data-view="today" aria-current="page">Today</button><button data-view="calendar">Calendar</button><button data-view="notes">Notes</button><button data-view="watch">Watchlist</button><button data-view="plans">Plans</button><button data-view="goals">Goals</button></nav>
       <section id="composer" class="composer" hidden>
         <div class="composer-heading"><h2 id="composer-title">Add something</h2><button id="cancel" class="text-button" type="button">Close</button></div>
         <form id="entry-form">
