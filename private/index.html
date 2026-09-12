@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Deepfolio">
+  <title>Deepfolio — Private</title>
+  <link rel="apple-touch-icon" href="deepfolio-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="private.css">
+  <link rel="stylesheet" href="private-theme.css">
+  <link rel="stylesheet" href="private-motion.css">
+  <link rel="stylesheet" href="private-public.css">
+  <link rel="stylesheet" href="calendar.css">
+  <link rel="stylesheet" href="calendar-controls.css">
+  <script defer src="vendor/supabase.js"></script>
+  <script defer src="private.js"></script>
+</head>
+<body>
+  <div class="preloader" aria-hidden="true"><span>DEEPFOLIO</span><strong id="load-number">000</strong></div>
+  <canvas id="deep-field" aria-hidden="true"></canvas>
+  <canvas id="private-globe" aria-hidden="true"></canvas>
+  <header class="site-header"><a href="/" class="site-name" aria-label="Deepfolio home">Deepfolio</a><details class="profile-menu" id="profile-menu"><summary>अनुभव</summary><div><button id="theme-toggle" type="button">Dark mode</button><details class="account"><summary>Account</summary><form id="password-form"><label for="new-password">Set or change password</label><input id="new-password" type="password" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters"><label for="confirm-password">Confirm password</label><input id="confirm-password" type="password" autocomplete="new-password" minlength="8" required placeholder="Repeat password"><button>Save password</button></form></details><button id="signout" type="button" hidden>Sign out</button></div></details></header>
+  <main>
+    <section id="login" class="login-card">
+      <p class="kicker">PRIVATE INDEX</p>
+      <h1>Keep the thread.</h1>
+      <p>Notes, plans, and the things worth returning to.</p>
+      <form id="login-form"><label for="email">Email</label><input id="email" type="email" autocomplete="email" required placeholder="you@example.com"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required placeholder="Your Deepfolio password"><button class="primary">Sign in</button></form>
+      <button id="send-link" class="recovery-link" type="button">Use an email link instead</button>
+    </section>
+    <p id="status" role="status" aria-live="polite"></p>
+    <section id="workspace" hidden>
+      <div class="topline"><div><p id="date" class="kicker"></p><h1 id="view-title">Today</h1></div><button id="new-entry" class="primary add-button">+ Add</button></div>
+      <p id="summary" class="summary"></p>
+      <nav aria-label="Private workspace"><button data-view="today" aria-current="page">Today</button><button data-view="calendar">Calendar</button><button data-view="notes">Notes</button><button data-view="watch">To Watch</button><button data-view="plans">Plans</button><button data-view="goals">Goals</button></nav>
+      <section id="composer" class="composer" hidden>
+        <div class="composer-heading"><h2 id="composer-title">Add something</h2><button id="cancel" class="text-button" type="button">Close</button></div>
+        <form id="entry-form">
+          <div class="type-row" role="group" aria-label="Entry type"><button type="button" data-kind="task">Task</button><button type="button" data-kind="note">Note</button><button type="button" data-kind="watch">To Watch</button><button type="button" data-kind="trip">Plan</button></div>
+          <input id="kind" type="hidden" value="task">
+          <label for="title">Title</label><input id="title" maxlength="300" required placeholder="What do you want to keep?">
+          <label for="body">Details <span>(optional)</span></label><textarea id="body" maxlength="20000" rows="4" placeholder="Anything useful to remember"></textarea>
+          <div id="url-row"><label for="source-url">Link <span>(optional)</span></label><input id="source-url" type="url" placeholder="https://..."></div>
+          <div id="price-row" hidden><label for="target-price">Target price <span>(optional)</span></label><div class="field-row"><input id="target-price" type="number" min="0" step="0.01" placeholder="250"><select id="currency"><option value="USD">USD</option></select></div></div>
+          <div id="date-row" class="field-row"><div><label for="due">When <span>(optional)</span></label><input id="due" type="date"></div><div id="end-row" hidden><label for="end-date">End <span>(optional)</span></label><input id="end-date" type="date"></div></div>
+          <div id="visibility-row" hidden><label class="check"><input id="is-public" type="checkbox"> Ready to publish publicly</label></div>
+          <div class="form-actions"><button class="primary">Save</button><button id="delete-entry" type="button" class="danger" hidden>Delete</button></div>
+        </form>
+      </section>
+      <div class="list-header"><h2 id="list-title">Next up</h2><span id="count"></span></div>
+      <section id="entries" aria-live="polite"></section>
+    </section>
+  </main>
+</body>
+</html>

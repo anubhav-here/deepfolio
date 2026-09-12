@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#070707" />
+    <meta name="description" content="Anubhav Deep — quantitative research and a working personal index." />
+    <title>Anubhav Deep</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="refinements.css" />
+    <link rel="stylesheet" href="preloader.css" />
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <div class="preloader" aria-hidden="true"><span>ANUBHAV DEEP</span><strong id="load-number">000</strong></div>
+    <header class="site-header">
+      <a href="#top" class="mark" aria-label="Anubhav Deep, home">अनुभव</a>
+      <nav aria-label="Primary navigation"><a href="#background">Background</a><a href="#play">Play</a><a href="#recs">Recs</a></nav>
+    </header>
+    <main id="top">
+      <section class="entry" aria-label="India to New York">
+        <canvas id="globe" aria-hidden="true"></canvas>
+        <div class="route-label"><span>India</span><i aria-hidden="true">→</i><span>New York</span></div>
+        <a class="entry-arrow" href="#background" aria-label="Continue">↓</a>
+      </section>
+      <section class="background" id="background" aria-label="Background">
+        <canvas id="monte-carlo" aria-hidden="true"></canvas>
+        <ol class="timeline">
+          <li class="timeline-event current"><div class="event-copy"><strong>Millennium</strong><p>Now · Quantitative Research · Commodities</p></div></li>
+          <li class="timeline-event"><div class="event-copy"><strong>Carnegie Mellon</strong><p>2024 · M.S. Computational Finance</p></div></li>
+          <li class="timeline-event"><div class="event-copy"><strong>J.P. Morgan</strong><p>2021–23 · Quantitative Associate</p></div></li>
+          <li class="timeline-event"><div class="event-copy"><strong>Shell</strong><p>2020–21 · Data Engineer</p></div></li>
+          <li class="timeline-event"><div class="event-copy"><strong>Red Hat</strong><p>2020 · Intern &amp; Open Source Contributor</p></div></li>
+        </ol>
+      </section>
+      <section class="play section" id="play" aria-labelledby="play-title">
+        <header class="section-head"><p id="play-title">Play</p><p>Two small problems</p></header>
+        <div class="game-grid">
+          <article class="game-panel chess-panel"><div class="game-head"><p>Chess <span id="chess-count"></span></p><button id="chess-shuffle" type="button">Shuffle</button></div><p id="chess-status" aria-live="polite">White to move · mate in one.</p><div id="chess-board" role="grid" aria-label="Chess puzzle"></div><p class="game-note">Find the queen move.</p></article>
+          <article class="game-panel reaction" data-state="idle"><div class="game-head"><p>Lights Out</p><p>Reaction</p></div><div class="lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><button type="button" id="reaction-button">Start</button><p id="reaction-result" aria-live="polite">Wait for lights out.</p><div class="reaction-details"><dl class="benchmarks" aria-label="Reaction time benchmarks"><div><dt>sharp</dt><dd>&lt;220 ms</dd></div><div><dt>quick</dt><dd>220–280</dd></div><div><dt>steady</dt><dd>280–350</dd></div></dl><div class="leaderboard" aria-live="polite"><p>Your board <span>this device</span></p><ol id="reaction-leaderboard"></ol></div></div></article>
+        </div>
+      </section>
+      <section class="recs section" id="recs" aria-labelledby="recs-title">
+        <header class="section-head"><p id="recs-title">Recs</p><p>New York</p></header>
+        <div class="rec-list">
+          <a class="rec-row" href="https://www.cove-nyc.com/" target="_blank" rel="noreferrer"><span>Cove</span><span class="rec-place">Hudson Square</span><span class="tags">Restaurant</span><b>↗</b></a>
+          <a class="rec-row" href="https://www.kabin.nyc/" target="_blank" rel="noreferrer"><span>KABIN</span><span class="rec-place">Hudson Square</span><span class="tags">Restaurant · Bar</span><b>↗</b></a>
+          <a class="rec-row" href="https://www.osamilupstairs.com/" target="_blank" rel="noreferrer"><span>Osamil Upstairs</span><span class="rec-place">Koreatown</span><span class="tags">Restaurant · Bar</span><b>↗</b></a>
+          <a class="rec-row" href="https://ambassadorsclubhouse.com/newyork/" target="_blank" rel="noreferrer"><span>Ambassadors Clubhouse</span><span class="rec-place">NoMad</span><span class="tags">Restaurant</span><b>↗</b></a>
+          <div class="rec-row"><span>Pausa Brooklyn</span><span class="rec-place">Brooklyn</span><span class="tags">Listening · Party · Venue</span><b>→</b></div>
+        </div>
+      </section>
+      <section class="listening section" id="listening" aria-labelledby="listening-title">
+        <header class="section-head"><p>Listening</p><p>YouTube Music</p></header>
+        <div class="listening-row"><div><p id="listening-title">Selected from my rotation</p><p id="track-status" aria-live="polite">Shuffle on</p></div><div class="player-actions"><button type="button" id="play-toggle" aria-label="Play playlist">Play</button><button type="button" id="next-track" aria-label="Play next track">Next</button><a href="https://music.youtube.com/playlist?list=PLfbmOEKBzK4Q&amp;si=JhrLOhckpkJ4GF5D" target="_blank" rel="noreferrer">Playlist ↗</a></div></div>
+        <div class="video-shell"><div id="youtube-player"></div></div>
+      </section>
+    </main>
+    <footer><p>© <span id="year"></span> Anubhav Deep</p><nav aria-label="Social links"><a href="https://www.linkedin.com/in/anubhavkaro/" target="_blank" rel="noreferrer">LinkedIn</a><a href="https://github.com/anubhav-here" target="_blank" rel="noreferrer">GitHub</a><a href="https://www.instagram.com/anubhavkaro/" target="_blank" rel="noreferrer">Instagram</a></nav></footer>
+  </body>
+</html>
