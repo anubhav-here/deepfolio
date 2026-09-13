@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="private-public.css">
   <link rel="stylesheet" href="calendar.css">
   <link rel="stylesheet" href="calendar-controls.css">
+  <link rel="stylesheet" href="private-navigation.css">
   <script defer src="vendor/supabase.js"></script>
   <script defer src="private.js"></script>
 </head>
@@ -35,19 +36,26 @@
     </section>
     <p id="status" role="status" aria-live="polite"></p>
     <section id="workspace" hidden>
-      <div class="topline"><div><p id="date" class="kicker"></p><h1 id="view-title">Today</h1></div><button id="new-entry" class="primary add-button">+ Add</button></div>
+      <div class="topline"><div><p id="date" class="kicker"></p><h1 id="view-title">Today</h1></div><div class="top-actions"><button id="menu-toggle" class="menu-toggle" type="button" aria-expanded="false" aria-controls="app-menu"><span aria-hidden="true">☰</span> Menu</button><button id="new-entry" class="primary add-button">+ Add</button></div></div>
       <p id="summary" class="summary"></p>
-      <nav aria-label="Private workspace"><button data-view="today" aria-current="page">Today</button><button data-view="calendar">Calendar</button><button data-view="notes">Notes</button><button data-view="watch">To Watch</button><button data-view="plans">Plans</button><button data-view="goals">Goals</button></nav>
+      <aside id="app-menu" class="app-menu" hidden aria-label="Workspace sections">
+        <div class="menu-heading"><span>Navigate</span><button id="menu-close" class="text-button" type="button">Close</button></div>
+        <button data-view="today" aria-current="page">Today</button><button data-view="calendar">Calendar</button>
+        <details open><summary>Lists</summary><div><button data-view="to-watch">To Watch</button><button data-view="watchlist">Watchlist</button><button data-view="notes">Notes</button><button data-view="plans">Plans</button></div></details>
+        <details open><summary>Goals</summary><div><button data-view="goals">All goals</button><button data-view="long-goals">Long-term</button><button data-view="short-goals">Short-term</button></div></details>
+      </aside>
       <section id="composer" class="composer" hidden>
         <div class="composer-heading"><h2 id="composer-title">Add something</h2><button id="cancel" class="text-button" type="button">Close</button></div>
         <form id="entry-form">
-          <div class="type-row" role="group" aria-label="Entry type"><button type="button" data-kind="task">Task</button><button type="button" data-kind="note">Note</button><button type="button" data-kind="watch">To Watch</button><button type="button" data-kind="trip">Plan</button></div>
+          <div class="type-row" role="group" aria-label="Entry type"><button type="button" data-kind="task">Task</button><button type="button" data-kind="note">Note</button><button type="button" data-kind="to_watch">To Watch</button><button type="button" data-kind="watch">Watchlist</button><button type="button" data-kind="trip">Plan</button><button type="button" data-kind="long_goal">Long-term goal</button><button type="button" data-kind="weekly_goal">Short-term goal</button></div>
           <input id="kind" type="hidden" value="task">
           <label for="title">Title</label><input id="title" maxlength="300" required placeholder="What do you want to keep?">
           <label for="body">Details <span>(optional)</span></label><textarea id="body" maxlength="20000" rows="4" placeholder="Anything useful to remember"></textarea>
           <div id="url-row"><label for="source-url">Link <span>(optional)</span></label><input id="source-url" type="url" placeholder="https://..."></div>
           <div id="price-row" hidden><label for="target-price">Target price <span>(optional)</span></label><div class="field-row"><input id="target-price" type="number" min="0" step="0.01" placeholder="250"><select id="currency"><option value="USD">USD</option></select></div></div>
           <div id="date-row" class="field-row"><div><label for="due">When <span>(optional)</span></label><input id="due" type="date"></div><div id="end-row" hidden><label for="end-date">End <span>(optional)</span></label><input id="end-date" type="date"></div></div>
+          <div id="goal-parent-row" hidden><label for="parent-goal">Long-term goal</label><select id="parent-goal"><option value="">Choose a long-term goal</option></select></div>
+          <div id="week-row" hidden><label for="week-start">Week of</label><input id="week-start" type="date"></div>
           <div id="visibility-row" hidden><label class="check"><input id="is-public" type="checkbox"> Ready to publish publicly</label></div>
           <div class="form-actions"><button class="primary">Save</button><button id="delete-entry" type="button" class="danger" hidden>Delete</button></div>
         </form>
