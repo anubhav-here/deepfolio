@@ -1,1 +1,134 @@
-@media(max-width:640px){.site-header{height:68px!important;padding:0 18px!important}.site-header,main{max-width:none}main{min-height:0!important;padding:0 18px 36px!important}#status{margin:0!important;min-height:0!important}#workspace{padding:24px 0 40px!important}.topline{border-top:0!important;padding-top:0!important}.summary{margin-top:12px}}
+/* Final private-workspace layout: one calm surface, designed phone-first. */
+:root{
+  --private-gutter: clamp(16px, 4vw, 28px);
+}
+body.authenticated #deep-field,
+body.authenticated #private-globe{
+  display:none !important;
+}
+body.authenticated{
+  background:var(--bg) !important;
+}
+body.authenticated .site-header,
+body.authenticated main,
+body.authenticated #workspace{
+  background:var(--bg);
+}
+body.authenticated .site-header{
+  max-width:1100px;
+  margin:0 auto;
+  height:64px;
+  padding:0 var(--private-gutter) !important;
+}
+body.authenticated main{
+  max-width:1100px;
+  min-height:calc(100vh - 64px);
+  margin:0 auto;
+  padding:0 var(--private-gutter) 48px !important;
+}
+body.authenticated #workspace{
+  max-width:none;
+  margin:0;
+  padding:28px 0 0 !important;
+}
+body.authenticated .topline{
+  align-items:center;
+  border-top:0 !important;
+  padding:0 0 18px !important;
+}
+body.authenticated .topline h1{
+  margin:4px 0 0;
+  font-size:clamp(30px,8vw,42px) !important;
+  line-height:1;
+}
+body.authenticated .top-actions{
+  flex:0 0 auto;
+}
+body.authenticated .menu-toggle,
+body.authenticated .add-button{
+  min-height:40px;
+  padding:9px 11px;
+}
+body.authenticated .summary{
+  margin:0 0 20px;
+}
+body.authenticated .app-menu{
+  margin:0 0 22px;
+  padding:10px;
+  border-radius:0;
+  background:var(--surface);
+}
+body.authenticated .composer{
+  margin:0 0 24px;
+  padding:16px 0;
+  border-width:1px 0;
+}
+body.authenticated .list-header{
+  padding:0 0 10px;
+  margin:0;
+}
+body.authenticated #entries{
+  margin:0;
+}
+body.authenticated .entry{
+  gap:10px;
+  padding:14px 0 !important;
+}
+body.authenticated .entry h3{
+  line-height:1.25;
+  margin-bottom:3px;
+}
+body.authenticated .calendar-toolbar{
+  margin:0 0 16px;
+}
+body.authenticated .calendar-day{
+  min-height:4.5rem;
+}
+
+@media(max-width:640px){
+  .site-header{height:60px !important;}
+  .site-header, main{max-width:none;}
+  body.authenticated .site-header{
+    height:60px !important;
+    padding:0 18px !important;
+  }
+  body.authenticated main{
+    padding:0 18px 32px !important;
+  }
+  body.authenticated #workspace{
+    padding-top:18px !important;
+  }
+  body.authenticated .topline{
+    gap:12px;
+    padding-bottom:16px !important;
+  }
+  body.authenticated .topline h1{
+    font-size:32px !important;
+  }
+  body.authenticated .kicker{
+    font-size:10px;
+  }
+  body.authenticated .menu-toggle{
+    font-size:0;
+    width:40px;
+    justify-content:center;
+    padding:8px;
+  }
+  body.authenticated .menu-toggle span{
+    font-size:18px;
+  }
+  body.authenticated .add-button{
+    font-size:13px;
+    padding:9px 12px;
+  }
+  body.authenticated .app-menu details>div{
+    grid-template-columns:1fr 1fr;
+  }
+  body.authenticated .summary{
+    font-size:14px;
+    line-height:1.45;
+  }
+  body.authenticated .calendar-day{
+    min-height:4rem;
+  }
+}
