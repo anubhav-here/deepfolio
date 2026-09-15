@@ -190,3 +190,26 @@ body.authenticated .mobile-dock{position:fixed !important;z-index:1000 !importan
   body.authenticated .app-menu{position:fixed !important;z-index:999 !important}
   body.authenticated.menu-open{overflow:hidden}
 }
+
+/* Compact lists. Native horizontal scrolling reveals row actions. */
+.swipe-row{display:flex;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;min-width:0}
+.swipe-row::-webkit-scrollbar{display:none}
+.swipe-row>.entry{flex:0 0 100%;width:100%;min-width:0;scroll-snap-align:start}
+.swipe-actions{display:flex;flex:0 0 136px;align-items:stretch;scroll-snap-align:end;padding:4px 0 4px 8px;gap:4px}
+.swipe-actions button{flex:1;min-width:0;border:0;border-radius:8px;font-size:12px;padding:8px}
+.swipe-edit{background:var(--line);color:var(--ink)}
+.swipe-delete{background:#b42b29;color:#fff}
+@media(max-width:640px){
+  body.authenticated .entry{padding:7px 0 !important;gap:8px;align-items:center;min-height:54px}
+  body.authenticated .entry h3{font-size:15px;line-height:1.25;margin:0 0 2px}
+  body.authenticated .entry-meta{font-size:11px;letter-spacing:0;line-height:1.35}
+  body.authenticated .entry p{font-size:12px;line-height:1.35;margin:3px 0 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  body.authenticated .habit-entry .complete{width:36px;height:36px;flex-basis:36px;border-radius:9px;font-size:17px}
+  body.authenticated .entry .entry-actions{min-height:44px;padding:12px 6px;align-self:center;font-size:11px}
+  body.authenticated .empty{padding:14px 0;margin:0;font-size:13px;line-height:1.45}
+  body.authenticated .habit-list-header{margin-top:18px}
+  body.authenticated .list-header{padding-bottom:6px}
+  body.authenticated .list-header h2{font-size:14px}
+  body.authenticated .summary{margin-bottom:14px}
+  body.authenticated #status:empty{display:none}
+}
