@@ -177,3 +177,16 @@ body.authenticated .habit-list-header{margin-top:28px}
   body.authenticated .app-menu>button[data-view="habits"],
   body.authenticated .app-menu>button[data-view="calendar"]{display:none}
 }
+
+/* Override the decorative layer's body-child positioning rule. */
+body.authenticated .mobile-dock{position:fixed !important;z-index:1000 !important}
+#menu-backdrop{display:none}
+@media(max-width:640px){
+  body.authenticated #menu-backdrop:not([hidden]){
+    display:block;position:fixed !important;inset:0;z-index:998 !important;
+    width:100%;height:100%;margin:0;padding:0;border:0;border-radius:0;
+    background:rgba(0,0,0,.48);backdrop-filter:blur(3px);
+  }
+  body.authenticated .app-menu{position:fixed !important;z-index:999 !important}
+  body.authenticated.menu-open{overflow:hidden}
+}
