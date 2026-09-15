@@ -132,3 +132,12 @@ body.authenticated .calendar-day{
     min-height:4rem;
   }
 }
+
+body.authenticated .daily-navigation{display:flex;gap:8px;padding:0 0 18px;margin:0 0 20px;border-bottom:1px solid var(--line,#555)}
+body.authenticated .daily-navigation button{min-height:44px;padding:10px 20px;color:var(--ink);border-radius:8px}
+body.authenticated .daily-navigation button[aria-current]{background:var(--ink);color:var(--bg);font-weight:650}
+body.authenticated .habit-entry .complete{width:44px;height:44px;flex-basis:44px;font-size:20px;border-radius:12px}
+body.authenticated .habit-entry{align-items:center}
+body.authenticated .habit-entry .entry-actions{align-self:center;min-height:44px;padding:10px}
+body.authenticated .habit-add{margin-top:20px;min-height:44px}
+body.authenticated .habit-list-header{margin-top:28px}
