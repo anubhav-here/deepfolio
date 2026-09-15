@@ -38,13 +38,20 @@ function editEntry(e){editing=e.id;$('composer-title').textContent='Edit item';$
 async function update(id,patch){const {error}=await db.from('deepfolio_entries').update(patch).eq('id',id);if(error)throw error;await refresh();say('Saved.')}
 async function refresh(){const ticket=generation;const {data,error}=await db.from('deepfolio_entries').select('*').order('created_at',{ascending:false});if(ticket!==generation||!user)return;if(error)throw error;entries=data;render()}
 async function sync(){const ticket=++generation;$('workspace').hidden=true;entries=[];user=null;const {data,error}=await db.auth.getUser();if(ticket!==generation)return;document.body.classList.toggle('authenticated',!!data?.user);$('signout').hidden=!data?.user;$('login').hidden=!!data?.user;if(error||!data?.user){$('login').hidden=false;return}const owner=await db.from('deepfolio_owner').select('email');if(ticket!==generation)return;if(owner.error)throw owner.error;if(!owner.data.length){say('This account does not have workspace access.');return}user=data.user;$('workspace').hidden=false;say('');await refresh()}
-function setView(next){view=next;history.replaceState(null,'','#'+next);$('new-entry').textContent=next==='habits'?'+ Add habit':'+ Add';document.querySelectorAll('[data-view]').forEach(b=>b.toggleAttribute('aria-current',b.dataset.view===view));closeComposer();$('app-menu').hidden=true;$('menu-toggle').setAttribute('aria-expanded','false');$('dock-menu').setAttribute('aria-expanded','false');render()}
+function setMenu(open){$('app-menu').hidden=!open;$('menu-toggle').setAttribute('aria-expanded',String(open));$('dock-menu').setAttribute('aria-expanded',String(open));$('menu-backdrop').hidden=!open||!matchMedia('(max-width:640px)').matches;document.body.classList.toggle('menu-open',open)}
+function setView(next){view=next;history.replaceState(null,'','#'+next);$('new-entry').textContent=next==='habits'?'+ Add habit':'+ Add';document.querySelectorAll('[data-view]').forEach(b=>b.toggleAttribute('aria-current',b.dataset.view===view));closeComposer();setMenu(false);render()}
 $('login-form').onsubmit=e=>{e.preventDefault();run(e.submitter,async()=>{const {error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error)throw error;$('password').value='';await sync()})};
 $('send-link').onclick=e=>run(e.currentTarget,async()=>{const {error}=await db.auth.signInWithOtp({email:$('email').value.trim(),options:{shouldCreateUser:false,emailRedirectTo:location.origin+'/private/'}});if(error)throw error;say('Check your email for a recovery sign-in link.')});
 $('password-form').onsubmit=e=>{e.preventDefault();run(e.submitter,async()=>{const password=$('new-password').value;if(password!==$('confirm-password').value)throw Error('The passwords do not match.');const {error}=await db.auth.updateUser({password});if(error)throw error;$('password-form').reset();$('password-form').closest('details').open=false;say('Password saved. You can now sign in with Face ID AutoFill.')})};
 $('signout').onclick=e=>run(e.currentTarget,async()=>{const {error}=await db.auth.signOut();if(error)throw error;await sync()});
 $('theme-toggle').onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
-$('menu-toggle').onclick=()=>{const open=$('app-menu').hidden;$('app-menu').hidden=!open;$('menu-toggle').setAttribute('aria-expanded',String(open));$('dock-menu').setAttribute('aria-expanded',String(open))};$('menu-close').onclick=()=>{$('app-menu').hidden=true;$('menu-toggle').setAttribute('aria-expanded','false');$('dock-menu').setAttribute('aria-expanded','false')};
+const menuHome=document.createComment('Menu position');$('app-menu').before(menuHome);
+const mobileLayout=matchMedia('(max-width:640px)');
+function positionMenu(){setMenu(false);if(mobileLayout.matches)document.body.append($('app-menu'));else menuHome.after($('app-menu'))}
+mobileLayout.addEventListener('change',positionMenu);positionMenu();
+$('menu-toggle').onclick=()=>setMenu($('app-menu').hidden);
+$('menu-close').onclick=()=>setMenu(false);
+$('menu-backdrop').onclick=()=>setMenu(false);
 $('dock-menu').onclick=()=>$('menu-toggle').click();
 document.addEventListener('keydown',e=>{if(e.key==='Escape')$('menu-close').click()});
 $('new-entry').onclick=()=>openComposer();$('cancel').onclick=closeComposer;document.querySelectorAll('[data-kind]').forEach(b=>b.onclick=()=>setKind(b.dataset.kind));document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.view));
