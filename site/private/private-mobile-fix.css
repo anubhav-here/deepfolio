@@ -145,12 +145,12 @@ body.authenticated .habit-list-header{margin-top:28px}
 /* Mobile app navigation, with space for the iPhone home indicator. */
 .mobile-dock{display:none}
 @media(max-width:640px){
-  body.authenticated main{padding-bottom:calc(100px + env(safe-area-inset-bottom,0px)) !important}
+  body.authenticated main{padding-bottom:calc(112px + env(safe-area-inset-bottom,0px)) !important}
   body.authenticated .top-actions .menu-toggle{display:none}
   body.authenticated .mobile-dock{
     display:grid;grid-template-columns:repeat(4,1fr);position:fixed;
     left:0;right:0;bottom:0;z-index:60;margin:0;
-    padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px)) !important;
+    padding:8px 12px calc(20px + env(safe-area-inset-bottom,0px)) !important;
     background:var(--bg);border:0;border-top:1px solid var(--line);
     overflow:visible;gap:4px;
   }
@@ -168,7 +168,7 @@ body.authenticated .habit-list-header{margin-top:28px}
   }
   body.authenticated .app-menu{
     position:fixed;left:12px;right:12px;
-    bottom:calc(82px + env(safe-area-inset-bottom,0px));z-index:59;
+    bottom:calc(94px + env(safe-area-inset-bottom,0px));z-index:59;
     max-height:65dvh;overflow-y:auto;margin:0;padding:14px;
     background:var(--surface);border:1px solid var(--line);border-radius:16px;
     box-shadow:0 -12px 40px rgba(0,0,0,.16);
