@@ -5,11 +5,23 @@
 .event-copy strong{font-size:clamp(1.65rem,3vw,3.15rem);letter-spacing:-.06em;line-height:1}
 .event-copy p{margin-top:.45rem;font-size:.78rem}
 @media(max-width:760px){.timeline-event{padding:1.8rem 0 1.8rem 1.5rem}.timeline-event:before{top:2.5rem}.event-copy strong{font-size:clamp(1.7rem,8vw,2.35rem)}}
-.chess-square{position:relative;transition:background .16s ease,box-shadow .16s ease,transform .16s ease}
-.chess-square.piece-white{color:#f7f5ed;-webkit-text-stroke:.75px #1a1a18;text-shadow:0 1px 2px #000}
-.chess-square.piece-black{color:#11110f;-webkit-text-stroke:.65px #b9b6ad;text-shadow:0 1px 0 rgba(255,255,255,.35)}
-.chess-square.legal:after{content:"";position:absolute;width:18%;aspect-ratio:1;border-radius:50%;background:rgba(219,30,25,.8)}
-.chess-square.capture{box-shadow:inset 0 0 0 3px rgba(219,30,25,.85)}
-.chess-square.last-move{box-shadow:inset 0 0 0 3px rgba(241,240,235,.65)}
-.chess-square.invalid{background:#71231f!important;transform:scale(.94)}
-.chess-square.answer{box-shadow:inset 0 0 0 3px var(--red)}
+/* Chess is deliberately a fixed 8 × 8 square, independent of the panel width. */
+#chess-board{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));grid-template-rows:repeat(8,minmax(0,1fr));inline-size:min(100%,34rem);block-size:auto;aspect-ratio:1/1;overflow:hidden;border:1px solid rgba(241,240,235,.34);isolation:isolate}
+.chess-actions{display:flex;align-items:center;gap:1rem}
+.chess-square{position:relative;display:grid;place-items:center;min-inline-size:0;min-block-size:0;width:100%;height:100%;padding:0;border:0;border-radius:0;background:#20201d;overflow:hidden;transition:background .14s ease,box-shadow .14s ease,transform .14s ease}
+.chess-square.light{background:#d9d6cd}
+.chess-piece{position:relative;z-index:2;display:block;font-family:"Segoe UI Symbol","Arial Unicode MS",serif;font-size:clamp(1.75rem,5.7vw,3.25rem);line-height:1;transform:translateY(-.02em);pointer-events:none}
+/* White is filled ivory; black is filled charcoal with a crisp ivory edge. */
+.chess-square.piece-white .chess-piece{color:#fbfaf4;-webkit-text-stroke:1.35px #151513;text-shadow:0 1px 1px rgba(0,0,0,.65),0 0 5px rgba(255,255,255,.18)}
+.chess-square.piece-black .chess-piece{color:#20201d;-webkit-text-stroke:1.5px #f4f1e7;text-shadow:0 1px 1px rgba(0,0,0,.7),0 0 4px rgba(255,255,255,.16)}
+/* Selection is a neutral ivory frame. Legal moves are hints, not answer colouring. */
+.chess-square.selected{box-shadow:inset 0 0 0 3px #f5f2e9, inset 0 0 0 5px rgba(219,30,25,.95);z-index:1}
+.chess-square.legal:after{content:"";position:absolute;z-index:1;width:17%;aspect-ratio:1;border-radius:999px;background:rgba(36,35,31,.7);box-shadow:0 0 0 1px rgba(241,240,235,.62)}
+.chess-square.light.legal:after{background:rgba(36,35,31,.6);box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+.chess-square.capture{box-shadow:inset 0 0 0 3px rgba(219,30,25,.9)}
+.chess-square.last-move{box-shadow:inset 0 0 0 3px rgba(241,240,235,.72)}
+.chess-square.correct{box-shadow:inset 0 0 0 3px #f5f2e9,inset 0 0 0 6px var(--red);z-index:1}
+.chess-square.incorrect{background:#7a241f!important;transform:scale(.94)}
+.chess-coordinate{position:absolute;z-index:3;color:rgba(241,240,235,.68);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:clamp(.45rem,.85vw,.62rem);font-weight:650;line-height:1;pointer-events:none}
+.chess-square.light .chess-coordinate{color:rgba(24,24,22,.58)}
+.rank-label{top:5px;left:5px}.file-label{right:5px;bottom:4px;text-transform:lowercase}
