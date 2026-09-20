@@ -245,22 +245,29 @@ function runListening() {
 function runChessV2() {
   const board = $('#chess-board');
   const status = $('#chess-status');
+  const next = $('#chess-next');
   const shuffle = $('#chess-shuffle');
   const count = $('#chess-count');
-  if (!board || !status || !shuffle || !count) return;
+  const note = $('#chess-note');
+  if (!board || !status || !next || !shuffle || !count || !note) return;
   const files = 'abcdefgh';
-  const sources = [[1, 1], [1, 2], [1, 3], [1, 4], [1, 5], [2, 7], [3, 7]];
-  const variants = [[false, false], [true, false], [false, true], [true, true]];
-  const toSquare = ([file, rank], flipFile, flipRank) => `${files[flipFile ? 7 - file : file]}${flipRank ? 9 - rank : rank}`;
-  const puzzles = variants.flatMap(([flipFile, flipRank]) => sources.map((source) => ({
-    queen: toSquare(source, flipFile, flipRank), target: toSquare([1, 7], flipFile, flipRank),
-    pieces: {
-      [toSquare([0, 8], flipFile, flipRank)]: { glyph: '♚', side: 'black' },
-      [toSquare([2, 6], flipFile, flipRank)]: { glyph: '♔', side: 'white' },
-      [toSquare(source, flipFile, flipRank)]: { glyph: '♕', side: 'white' }
-    }
-  })));
-  let index = Math.floor(Math.random() * puzzles.length);
+  const piece = (glyph, side) => ({ glyph, side });
+  // A fixed, authored sequence: no random placements or disguised rotations.
+  const seeds = [
+    ['e8', 'f6', 'a3', 'e7'], ['e8', 'f6', 'd6', 'e7'], ['c8', 'd6', 'b6', 'c7'], ['c8', 'd6', 'c1', 'c7'],
+    ['f8', 'g6', 'b3', 'f7'], ['f8', 'g6', 'e6', 'f7'], ['a8', 'c6', 'b1', 'b7'], ['a8', 'c6', 'd7', 'b7'],
+    ['h8', 'f6', 'a7', 'g7'], ['h8', 'f6', 'g1', 'g7'], ['e1', 'f3', 'a2', 'e2'], ['e1', 'f3', 'd3', 'e2'],
+    ['c1', 'd3', 'b3', 'c2'], ['c1', 'd3', 'c8', 'c2'], ['f1', 'g3', 'a7', 'f2'], ['f1', 'g3', 'e3', 'f2'],
+    ['a1', 'c3', 'b8', 'b2'], ['a1', 'c3', 'd2', 'b2'], ['h1', 'f3', 'a2', 'g2'], ['h1', 'f3', 'g8', 'g2'],
+    ['a4', 'c5', 'b7', 'b4'], ['h4', 'f5', 'g7', 'g4'], ['a5', 'c4', 'b2', 'b5'], ['h5', 'f4', 'g2', 'g5'],
+    ['a4', 'c3', 'a3', 'b4'], ['h4', 'f3', 'c8', 'g4'], ['a5', 'c6', 'e2', 'b5'], ['h5', 'f6', 'c1', 'g5']
+  ];
+  const puzzles = seeds.map(([blackKing, whiteKing, queen, target]) => ({
+    queen, target,
+    pieces: { [blackKing]: piece('♚', 'black'), [whiteKing]: piece('♔', 'white'), [queen]: piece('♕', 'white') },
+    explanation: 'The queen seals the escape squares; your king protects the landing square.'
+  }));
+  let index = 0;
   let pieces = {};
   let selected = null;
   let legal = [];
@@ -280,23 +287,26 @@ function runChessV2() {
       button.type = 'button'; button.dataset.square = square; button.setAttribute('aria-label', square); button.className = `chess-square ${(rank + file) % 2 ? 'light' : ''}`;
       if (selected === square) button.classList.add('selected');
       if (legal.includes(square)) button.classList.add(piece?.side === 'black' ? 'capture' : 'legal');
-      if (invalid === square) button.classList.add('invalid');
-      if (movedTo === square) button.classList.add(solved ? 'answer' : 'last-move');
-      if (piece) { button.textContent = piece.glyph; button.classList.add(`piece-${piece.side}`); }
+      if (invalid === square) button.classList.add('incorrect');
+      if (movedTo === square) button.classList.add(solved ? 'correct' : 'last-move');
+      if (file === 0) { const label = document.createElement('span'); label.className = 'chess-coordinate rank-label'; label.textContent = rank; button.append(label); }
+      if (rank === 1) { const label = document.createElement('span'); label.className = 'chess-coordinate file-label'; label.textContent = files[file]; button.append(label); }
+      if (piece) { const glyph = document.createElement('span'); glyph.className = 'chess-piece'; glyph.textContent = piece.glyph; button.append(glyph); button.classList.add(`piece-${piece.side}`); }
       board.append(button);
     }
   }
-  function load(nextIndex) { index = nextIndex; pieces = { ...puzzles[index].pieces }; selected = null; legal = []; invalid = null; movedTo = null; solved = false; count.textContent = `${String(index + 1).padStart(2, '0')} / ${puzzles.length}`; status.textContent = 'White to move · mate in one.'; render(); }
+  function load(nextIndex) { index = nextIndex; pieces = { ...puzzles[index].pieces }; selected = null; legal = []; invalid = null; movedTo = null; solved = false; count.textContent = `${String(index + 1).padStart(2, '0')} / ${puzzles.length}`; status.textContent = 'White to move · mate in one.'; note.textContent = 'Select the white queen. Dots show legal destinations; the answer stays hidden.'; render(); }
   board.addEventListener('click', (event) => {
     const square = event.target.closest('[data-square]')?.dataset.square; if (!square || solved) return;
     const piece = pieces[square];
-    if (piece?.side === 'white' && piece.glyph === '♕') { selected = square; legal = queenMoves(square); status.textContent = 'Queen selected · choose a legal square.'; render(); return; }
+    if (piece?.side === 'white' && piece.glyph === '♕') { selected = square; legal = queenMoves(square); status.textContent = 'Queen selected · dots are legal destinations.'; note.textContent = 'A dot means the queen can go there — not necessarily that it is mate.'; render(); return; }
     if (!selected) { invalid = square; status.textContent = 'Select the white queen first.'; render(); setTimeout(() => { invalid = null; render(); }, 450); return; }
-    if (!legal.includes(square)) { invalid = square; selected = null; legal = []; status.textContent = 'That square is not available.'; render(); setTimeout(() => { invalid = null; render(); }, 450); return; }
+    if (!legal.includes(square)) { invalid = square; status.textContent = 'That square is not legal for the queen.'; render(); setTimeout(() => { invalid = null; render(); }, 450); return; }
     const from = selected; pieces = { ...pieces }; delete pieces[from]; pieces[square] = { glyph: '♕', side: 'white' }; selected = null; legal = []; movedTo = square;
-    if (square === puzzles[index].target) { solved = true; status.textContent = `Q${square}# · checkmate.`; render(); }
-    else { status.textContent = 'Not mate. Resetting the position.'; render(); setTimeout(() => load(index), 850); }
+    if (square === puzzles[index].target) { solved = true; status.textContent = `Q${square}# · checkmate.`; note.textContent = puzzles[index].explanation; render(); }
+    else { invalid = square; status.textContent = 'Legal move, but not mate.'; note.textContent = 'Red marks the miss. The position will reset so you can see the pattern again.'; render(); setTimeout(() => load(index), 900); }
   });
+  next.addEventListener('click', () => load((index + 1) % puzzles.length));
   shuffle.addEventListener('click', () => load((index + 1 + Math.floor(Math.random() * (puzzles.length - 1))) % puzzles.length));
   load(index);
 }
