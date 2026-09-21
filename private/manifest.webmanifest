@@ -1,0 +1,11 @@
+{
+  "name": "Deepfolio",
+  "short_name": "Deepfolio",
+  "start_url": "/private/",
+  "display": "standalone",
+  "background_color": "#0b0b0a",
+  "theme_color": "#0b0b0a",
+  "icons": [
+    { "src": "deepfolio-icon.png", "sizes": "1254x1254", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

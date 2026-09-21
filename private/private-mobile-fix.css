@@ -1,0 +1,215 @@
+/* Final private-workspace layout: one calm surface, designed phone-first. */
+:root{
+  --private-gutter: clamp(16px, 4vw, 28px);
+}
+body.authenticated #deep-field,
+body.authenticated #private-globe{
+  display:none !important;
+}
+body.authenticated{
+  background:var(--bg) !important;
+}
+body.authenticated .site-header,
+body.authenticated main,
+body.authenticated #workspace{
+  background:var(--bg);
+}
+body.authenticated .site-header{
+  max-width:1100px;
+  margin:0 auto;
+  height:64px;
+  padding:0 var(--private-gutter) !important;
+}
+body.authenticated main{
+  max-width:1100px;
+  min-height:calc(100vh - 64px);
+  margin:0 auto;
+  padding:0 var(--private-gutter) 48px !important;
+}
+body.authenticated #workspace{
+  max-width:none;
+  margin:0;
+  padding:28px 0 0 !important;
+}
+body.authenticated .topline{
+  align-items:center;
+  border-top:0 !important;
+  padding:0 0 18px !important;
+}
+body.authenticated .topline h1{
+  margin:4px 0 0;
+  font-size:clamp(30px,8vw,42px) !important;
+  line-height:1;
+}
+body.authenticated .top-actions{
+  flex:0 0 auto;
+}
+body.authenticated .menu-toggle,
+body.authenticated .add-button{
+  min-height:40px;
+  padding:9px 11px;
+}
+body.authenticated .summary{
+  margin:0 0 20px;
+}
+body.authenticated .app-menu{
+  margin:0 0 22px;
+  padding:10px;
+  border-radius:0;
+  background:var(--surface);
+}
+body.authenticated .composer{
+  margin:0 0 24px;
+  padding:16px 0;
+  border-width:1px 0;
+}
+body.authenticated .list-header{
+  padding:0 0 10px;
+  margin:0;
+}
+body.authenticated #entries{
+  margin:0;
+}
+body.authenticated .entry{
+  gap:10px;
+  padding:14px 0 !important;
+}
+body.authenticated .entry h3{
+  line-height:1.25;
+  margin-bottom:3px;
+}
+body.authenticated .calendar-toolbar{
+  margin:0 0 16px;
+}
+body.authenticated .calendar-day{
+  min-height:4.5rem;
+}
+
+@media(max-width:640px){
+  .site-header{height:60px !important;}
+  .site-header, main{max-width:none;}
+  body.authenticated .site-header{
+    height:60px !important;
+    padding:0 18px !important;
+  }
+  body.authenticated main{
+    padding:0 18px 32px !important;
+  }
+  body.authenticated #workspace{
+    padding-top:18px !important;
+  }
+  body.authenticated .topline{
+    gap:12px;
+    padding-bottom:16px !important;
+  }
+  body.authenticated .topline h1{
+    font-size:32px !important;
+  }
+  body.authenticated .kicker{
+    font-size:10px;
+  }
+  body.authenticated .menu-toggle{
+    font-size:0;
+    width:40px;
+    justify-content:center;
+    padding:8px;
+  }
+  body.authenticated .menu-toggle span{
+    font-size:18px;
+  }
+  body.authenticated .add-button{
+    font-size:13px;
+    padding:9px 12px;
+  }
+  body.authenticated .app-menu details>div{
+    grid-template-columns:1fr 1fr;
+  }
+  body.authenticated .summary{
+    font-size:14px;
+    line-height:1.45;
+  }
+  body.authenticated .calendar-day{
+    min-height:4rem;
+  }
+}
+
+body.authenticated .daily-navigation{display:flex;gap:8px;padding:0 0 18px;margin:0 0 20px;border-bottom:1px solid var(--line,#555)}
+body.authenticated .daily-navigation button{min-height:44px;padding:10px 20px;color:var(--ink);border-radius:8px}
+body.authenticated .daily-navigation button[aria-current]{background:var(--ink);color:var(--bg);font-weight:650}
+body.authenticated .habit-entry .complete{width:44px;height:44px;flex-basis:44px;font-size:20px;border-radius:12px}
+body.authenticated .habit-entry{align-items:center}
+body.authenticated .habit-entry .entry-actions{align-self:center;min-height:44px;padding:10px}
+body.authenticated .habit-add{margin-top:20px;min-height:44px}
+body.authenticated .habit-list-header{margin-top:28px}
+
+/* Mobile app navigation, with space for the iPhone home indicator. */
+.mobile-dock{display:none}
+@media(max-width:640px){
+  body.authenticated main{padding-bottom:calc(112px + env(safe-area-inset-bottom,0px)) !important}
+  body.authenticated .top-actions .menu-toggle{display:none}
+  body.authenticated .mobile-dock{
+    display:grid;grid-template-columns:repeat(4,1fr);position:fixed;
+    left:0;right:0;bottom:0;z-index:60;margin:0;
+    padding:8px 12px calc(20px + env(safe-area-inset-bottom,0px)) !important;
+    background:var(--bg);border:0;border-top:1px solid var(--line);
+    overflow:visible;gap:4px;
+  }
+  body.authenticated .mobile-dock button{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:5px;min-width:0;min-height:48px;padding:5px 2px;border:0;
+    border-radius:10px;background:transparent;color:var(--muted);
+    font-size:10px;font-weight:500;letter-spacing:0;text-transform:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .mobile-dock svg{width:22px;height:22px;flex:none}
+  body.authenticated .mobile-dock button[aria-current],
+  body.authenticated .mobile-dock button[aria-expanded="true"]{
+    color:var(--ink);background:color-mix(in srgb,var(--ink) 7%,transparent);font-weight:650
+  }
+  body.authenticated .app-menu{
+    position:fixed;left:12px;right:12px;
+    bottom:calc(94px + env(safe-area-inset-bottom,0px));z-index:59;
+    max-height:65dvh;overflow-y:auto;margin:0;padding:14px;
+    background:var(--surface);border:1px solid var(--line);border-radius:16px;
+    box-shadow:0 -12px 40px rgba(0,0,0,.16);
+  }
+  body.authenticated .app-menu>button[data-view="today"],
+  body.authenticated .app-menu>button[data-view="habits"],
+  body.authenticated .app-menu>button[data-view="calendar"]{display:none}
+}
+
+/* Override the decorative layer's body-child positioning rule. */
+body.authenticated .mobile-dock{position:fixed !important;z-index:1000 !important}
+#menu-backdrop{display:none}
+@media(max-width:640px){
+  body.authenticated #menu-backdrop:not([hidden]){
+    display:block;position:fixed !important;inset:0;z-index:998 !important;
+    width:100%;height:100%;margin:0;padding:0;border:0;border-radius:0;
+    background:rgba(0,0,0,.48);backdrop-filter:blur(3px);
+  }
+  body.authenticated .app-menu{position:fixed !important;z-index:999 !important}
+  body.authenticated.menu-open{overflow:hidden}
+}
+
+/* Compact lists. Native horizontal scrolling reveals row actions. */
+.swipe-row{display:flex;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;min-width:0}
+.swipe-row::-webkit-scrollbar{display:none}
+.swipe-row>.entry{flex:0 0 100%;width:100%;min-width:0;scroll-snap-align:start}
+.swipe-actions{display:flex;flex:0 0 136px;align-items:stretch;scroll-snap-align:end;padding:4px 0 4px 8px;gap:4px}
+.swipe-actions button{flex:1;min-width:0;border:0;border-radius:8px;font-size:12px;padding:8px}
+.swipe-edit{background:var(--line);color:var(--ink)}
+.swipe-delete{background:#b42b29;color:#fff}
+@media(max-width:640px){
+  body.authenticated .entry{padding:7px 0 !important;gap:8px;align-items:center;min-height:54px}
+  body.authenticated .entry h3{font-size:15px;line-height:1.25;margin:0 0 2px}
+  body.authenticated .entry-meta{font-size:11px;letter-spacing:0;line-height:1.35}
+  body.authenticated .entry p{font-size:12px;line-height:1.35;margin:3px 0 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  body.authenticated .habit-entry .complete{width:36px;height:36px;flex-basis:36px;border-radius:9px;font-size:17px}
+  body.authenticated .entry .entry-actions{min-height:44px;padding:12px 6px;align-self:center;font-size:11px}
+  body.authenticated .empty{padding:14px 0;margin:0;font-size:13px;line-height:1.45}
+  body.authenticated .habit-list-header{margin-top:18px}
+  body.authenticated .list-header{padding-bottom:6px}
+  body.authenticated .list-header h2{font-size:14px}
+  body.authenticated .summary{margin-bottom:14px}
+  body.authenticated #status:empty{display:none}
+}
