@@ -248,10 +248,9 @@ function runChessV2() {
   const next = $('#chess-next');
   const shuffle = $('#chess-shuffle');
   const count = $('#chess-count');
-  const note = $('#chess-note');
-  if (!board || !status || !next || !shuffle || !count || !note) return;
+  if (!board || !status || !next || !shuffle || !count) return;
   const files = 'abcdefgh';
-  const piece = (glyph, side) => ({ glyph, side });
+  const piece = (kind, side) => ({ kind, side });
   // A fixed, authored sequence: no random placements or disguised rotations.
   const seeds = [
     ['e8', 'f6', 'a3', 'e7'], ['e8', 'f6', 'd6', 'e7'], ['c8', 'd6', 'b6', 'c7'], ['c8', 'd6', 'c1', 'c7'],
@@ -264,8 +263,7 @@ function runChessV2() {
   ];
   const puzzles = seeds.map(([blackKing, whiteKing, queen, target]) => ({
     queen, target,
-    pieces: { [blackKing]: piece('♚', 'black'), [whiteKing]: piece('♔', 'white'), [queen]: piece('♕', 'white') },
-    explanation: 'The queen seals the escape squares; your king protects the landing square.'
+    pieces: { [blackKing]: piece('k', 'black'), [whiteKing]: piece('k', 'white'), [queen]: piece('q', 'white') }
   }));
   let index = 0;
   let pieces = {};
@@ -289,22 +287,20 @@ function runChessV2() {
       if (legal.includes(square)) button.classList.add(piece?.side === 'black' ? 'capture' : 'legal');
       if (invalid === square) button.classList.add('incorrect');
       if (movedTo === square) button.classList.add(solved ? 'correct' : 'last-move');
-      if (file === 0) { const label = document.createElement('span'); label.className = 'chess-coordinate rank-label'; label.textContent = rank; button.append(label); }
-      if (rank === 1) { const label = document.createElement('span'); label.className = 'chess-coordinate file-label'; label.textContent = files[file]; button.append(label); }
-      if (piece) { const glyph = document.createElement('span'); glyph.className = 'chess-piece'; glyph.textContent = piece.glyph; button.append(glyph); button.classList.add(`piece-${piece.side}`); }
+      if (piece) { const image = document.createElement('img'); image.className = 'chess-piece'; image.src = `https://unpkg.com/chessboard-element@1.2.0/chesspieces/wikipedia/${piece.side === 'white' ? 'w' : 'b'}${piece.kind.toUpperCase()}.png`; image.alt = `${piece.side} ${piece.kind === 'k' ? 'king' : 'queen'}`; button.append(image); button.classList.add(`piece-${piece.side}`); }
       board.append(button);
     }
   }
-  function load(nextIndex) { index = nextIndex; pieces = { ...puzzles[index].pieces }; selected = null; legal = []; invalid = null; movedTo = null; solved = false; count.textContent = `${String(index + 1).padStart(2, '0')} / ${puzzles.length}`; status.textContent = 'White to move · mate in one.'; note.textContent = 'Select the white queen. Dots show legal destinations; the answer stays hidden.'; render(); }
+  function load(nextIndex) { index = nextIndex; pieces = { ...puzzles[index].pieces }; selected = null; legal = []; invalid = null; movedTo = null; solved = false; count.textContent = `${String(index + 1).padStart(2, '0')} / ${puzzles.length}`; status.textContent = 'White to move · mate in one.'; render(); }
   board.addEventListener('click', (event) => {
     const square = event.target.closest('[data-square]')?.dataset.square; if (!square || solved) return;
     const piece = pieces[square];
-    if (piece?.side === 'white' && piece.glyph === '♕') { selected = square; legal = queenMoves(square); status.textContent = 'Queen selected · dots are legal destinations.'; note.textContent = 'A dot means the queen can go there — not necessarily that it is mate.'; render(); return; }
-    if (!selected) { invalid = square; status.textContent = 'Select the white queen first.'; render(); setTimeout(() => { invalid = null; render(); }, 450); return; }
-    if (!legal.includes(square)) { invalid = square; status.textContent = 'That square is not legal for the queen.'; render(); setTimeout(() => { invalid = null; render(); }, 450); return; }
-    const from = selected; pieces = { ...pieces }; delete pieces[from]; pieces[square] = { glyph: '♕', side: 'white' }; selected = null; legal = []; movedTo = square;
-    if (square === puzzles[index].target) { solved = true; status.textContent = `Q${square}# · checkmate.`; note.textContent = puzzles[index].explanation; render(); }
-    else { invalid = square; status.textContent = 'Legal move, but not mate.'; note.textContent = 'Red marks the miss. The position will reset so you can see the pattern again.'; render(); setTimeout(() => load(index), 900); }
+    if (piece?.side === 'white' && piece.kind === 'q') { selected = square; legal = queenMoves(square); status.textContent = 'Your move.'; render(); return; }
+    if (!selected) { invalid = square; status.textContent = 'Choose the queen.'; render(); setTimeout(() => { invalid = null; render(); }, 450); return; }
+    if (!legal.includes(square)) { invalid = square; status.textContent = 'Try again.'; render(); setTimeout(() => { invalid = null; render(); }, 450); return; }
+    const from = selected; pieces = { ...pieces }; delete pieces[from]; pieces[square] = { kind: 'q', side: 'white' }; selected = null; legal = []; movedTo = square;
+    if (square === puzzles[index].target) { solved = true; status.textContent = `Q${square}# · checkmate.`; render(); }
+    else { invalid = square; status.textContent = 'Not mate.'; render(); setTimeout(() => load(index), 900); }
   });
   next.addEventListener('click', () => load((index + 1) % puzzles.length));
   shuffle.addEventListener('click', () => load((index + 1 + Math.floor(Math.random() * (puzzles.length - 1))) % puzzles.length));
